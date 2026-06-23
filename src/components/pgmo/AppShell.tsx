@@ -44,7 +44,7 @@ export function AppShell({ children, full = false }: { children: ReactNode; full
       <footer className="border-t border-border py-6">
         <div className="mx-auto flex max-w-[1600px] items-center justify-between px-8 text-xs text-muted-foreground">
           <span>© PgMO Studio</span>
-          <span className="eyebrow">A prototype for enterprise alignment</span>
+          <span className="eyebrow">Built for complex program delivery</span>
         </div>
       </footer>
     </div>
