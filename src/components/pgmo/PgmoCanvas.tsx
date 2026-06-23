@@ -171,6 +171,34 @@ function Inner() {
               Hide
             </button>
           </div>
+
+          {/* Maturity filter */}
+          <div className="mt-3">
+            <div className="eyebrow mb-1.5">Maturity</div>
+            <div className="flex flex-wrap gap-1">
+              {([null, "current", "transition", "target"] as (Maturity | null)[]).map((m) => {
+                const active = maturityFilter === m;
+                const label = m ? MATURITY_META[m].label : "All";
+                const tone = m ? MATURITY_META[m].tone : undefined;
+                return (
+                  <button
+                    key={label}
+                    type="button"
+                    onClick={() => setMaturityFilter(m)}
+                    className={
+                      "flex items-center gap-1 rounded-sm border px-2 py-1 text-[11px] font-medium transition-colors " +
+                      (active
+                        ? "border-primary bg-primary/5 text-primary"
+                        : "border-border text-muted-foreground hover:text-foreground")
+                    }
+                  >
+                    {tone && <span className="h-2 w-2 rounded-full" style={{ backgroundColor: tone }} />}
+                    {label}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
         </div>
 
         <ReactFlow
