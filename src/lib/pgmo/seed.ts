@@ -30,8 +30,8 @@ export const SEED_NODES: SeedNode[] = [
   { id: "n_limits",    x: 320, data: { label: "Limits Monitoring", kind: "workflow", layer: "risk", owner: "Risk", maturity: "transition" } },
 
   // Compliance
-  { id: "n_surv",      x: 80,  data: { label: "Trade Surveillance", kind: "system", layer: "compliance", vendor: "NICE Actimize", owner: "Compliance" } },
-  { id: "n_kyc",       x: 320, data: { label: "KYC / AML", kind: "workflow", layer: "compliance", owner: "Compliance" } },
+  { id: "n_surv",      x: 80,  data: { label: "Trade Surveillance", kind: "system", layer: "compliance", vendor: "NICE Actimize", owner: "Compliance", maturity: "current" } },
+  { id: "n_kyc",       x: 320, data: { label: "KYC / AML", kind: "workflow", layer: "compliance", owner: "Compliance", maturity: "current" } },
 
   // Finance
   { id: "n_gl",        x: 80,  data: { label: "General Ledger", kind: "system", layer: "finance", vendor: "Workday", owner: "Finance" } },
