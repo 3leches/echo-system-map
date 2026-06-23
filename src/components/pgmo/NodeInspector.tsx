@@ -1,6 +1,18 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { usePgmo } from "@/lib/pgmo/store";
-import { LAYERS, MATURITY_META, type PgmoNodeData, type LayerId, type NodeKind, type Maturity } from "@/lib/pgmo/types";
+import {
+  LAYERS,
+  MATURITY_META,
+  AUTOMATION_META,
+  EXECUTION_META,
+  type PgmoNodeData,
+  type LayerId,
+  type NodeKind,
+  type Maturity,
+  type Automation,
+  type Execution,
+  type WorkflowStep,
+} from "@/lib/pgmo/types";
 import { Link } from "@tanstack/react-router";
 
 export function NodeInspector() {
@@ -259,6 +271,10 @@ function NodeEditPanel({
           Mark as enterprise / shared resource
         </label>
 
+        {data.kind === "workflow" && (
+          <WorkflowStepsSection nodeId={node.id} data={data} onUpdate={onUpdate} />
+        )}
+
         <div>
           <div className="eyebrow mb-2">Linked initiatives</div>
           {linkedInitiatives.length === 0 ? (
@@ -301,6 +317,187 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
       <div className="eyebrow mb-1">{label}</div>
       {children}
     </label>
+  );
+}
+
+function SegChoice<T extends string>({
+  value,
+  options,
+  onChange,
+  size = "sm",
+}: {
+  value: T | undefined;
+  options: { value: T; label: string; tone?: string }[];
+  onChange: (v: T) => void;
+  size?: "sm" | "xs";
+}) {
+  const pad = size === "xs" ? "px-1.5 py-0.5 text-[10px]" : "px-2 py-1 text-[11px]";
+  return (
+    <div className="flex gap-1">
+      {options.map((o) => {
+        const active = value === o.value;
+        return (
+          <button
+            key={o.value}
+            type="button"
+            onClick={() => onChange(o.value)}
+            className={
+              "flex flex-1 items-center justify-center gap-1 rounded-sm border transition-colors " +
+              pad +
+              " " +
+              (active
+                ? "border-primary bg-primary/5 text-primary"
+                : "border-border text-muted-foreground hover:text-foreground")
+            }
+          >
+            {o.tone && (
+              <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: o.tone }} />
+            )}
+            {o.label}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+function WorkflowStepsSection({
+  nodeId,
+  data,
+  onUpdate,
+}: {
+  nodeId: string;
+  data: PgmoNodeData;
+  onUpdate: (id: string, patch: Partial<PgmoNodeData>) => void;
+}) {
+  const addStep = usePgmo((s) => s.addStep);
+  const updateStep = usePgmo((s) => s.updateStep);
+  const deleteStep = usePgmo((s) => s.deleteStep);
+  const [open, setOpen] = useState(true);
+
+  const steps = data.steps ?? [];
+  const autoOpts: { value: Automation; label: string; tone: string }[] = [
+    { value: "manual", label: "Manual", tone: AUTOMATION_META.manual.tone },
+    { value: "automated", label: "Automated", tone: AUTOMATION_META.automated.tone },
+  ];
+  const execOpts: { value: Execution; label: string; tone: string }[] = [
+    { value: "deterministic", label: "Deterministic", tone: EXECUTION_META.deterministic.tone },
+    { value: "ai_enhanced", label: "AI-enhanced", tone: EXECUTION_META.ai_enhanced.tone },
+  ];
+
+  return (
+    <div className="rounded-sm border border-border bg-background">
+      <div className="flex items-center justify-between border-b border-border px-3 py-2">
+        <div className="eyebrow">Workflow steps</div>
+        <button
+          type="button"
+          onClick={() => setOpen((v) => !v)}
+          className="text-[11px] text-muted-foreground hover:text-foreground"
+        >
+          {open ? "Collapse" : "Expand"}
+        </button>
+      </div>
+
+      {open && (
+        <div className="space-y-3 p-3">
+          {/* Workflow-level defaults */}
+          <div className="space-y-2 rounded-sm border border-dashed border-border bg-paper px-2.5 py-2">
+            <div className="text-[10px] uppercase tracking-wider text-muted-foreground">
+              Workflow defaults
+            </div>
+            <SegChoice
+              value={data.automation ?? "manual"}
+              options={autoOpts}
+              onChange={(v) => onUpdate(nodeId, { automation: v })}
+            />
+            <SegChoice
+              value={data.execution ?? "deterministic"}
+              options={execOpts}
+              onChange={(v) => onUpdate(nodeId, { execution: v })}
+            />
+          </div>
+
+          {steps.length === 0 ? (
+            <p className="text-[11px] text-muted-foreground">
+              No steps yet. Break this workflow into ordered steps to mark each one as manual or
+              automated, deterministic or AI-enhanced.
+            </p>
+          ) : (
+            <ol className="space-y-2">
+              {steps.map((step, idx) => (
+                <StepRow
+                  key={step.id}
+                  index={idx + 1}
+                  step={step}
+                  autoOpts={autoOpts}
+                  execOpts={execOpts}
+                  onChange={(patch) => updateStep(nodeId, step.id, patch)}
+                  onDelete={() => deleteStep(nodeId, step.id)}
+                />
+              ))}
+            </ol>
+          )}
+
+          <button
+            type="button"
+            onClick={() => addStep(nodeId)}
+            className="w-full rounded-sm border border-dashed border-border px-2 py-1.5 text-[11px] text-muted-foreground hover:border-primary hover:text-primary"
+          >
+            + Add step
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function StepRow({
+  index,
+  step,
+  autoOpts,
+  execOpts,
+  onChange,
+  onDelete,
+}: {
+  index: number;
+  step: WorkflowStep;
+  autoOpts: { value: Automation; label: string; tone: string }[];
+  execOpts: { value: Execution; label: string; tone: string }[];
+  onChange: (patch: Partial<WorkflowStep>) => void;
+  onDelete: () => void;
+}) {
+  return (
+    <li className="space-y-2 rounded-sm border border-border bg-paper px-2.5 py-2">
+      <div className="flex items-start gap-2">
+        <span className="mt-1 text-[10px] font-medium text-muted-foreground">{index}.</span>
+        <input
+          className="pgmo-input flex-1"
+          value={step.label}
+          onChange={(e) => onChange({ label: e.target.value })}
+          placeholder="Step name"
+        />
+        <button
+          type="button"
+          onClick={onDelete}
+          className="mt-1 text-[12px] text-muted-foreground hover:text-destructive"
+          aria-label="Delete step"
+        >
+          ✕
+        </button>
+      </div>
+      <SegChoice
+        value={step.automation}
+        options={autoOpts}
+        onChange={(v) => onChange({ automation: v })}
+        size="xs"
+      />
+      <SegChoice
+        value={step.execution}
+        options={execOpts}
+        onChange={(v) => onChange({ execution: v })}
+        size="xs"
+      />
+    </li>
   );
 }
 
