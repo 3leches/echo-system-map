@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { usePgmo } from "@/lib/pgmo/store";
-import { LAYERS, type PgmoNodeData, type LayerId, type NodeKind, type Maturity } from "@/lib/pgmo/types";
+import { LAYERS, MATURITY_META, type PgmoNodeData, type LayerId, type NodeKind, type Maturity } from "@/lib/pgmo/types";
 import { Link } from "@tanstack/react-router";
 
 export function NodeInspector() {
@@ -21,30 +21,144 @@ export function NodeInspector() {
     [initiatives, node],
   );
 
-  if (!node) {
-    return (
-      <aside className="flex h-full w-[340px] shrink-0 flex-col border-l border-border bg-paper">
-        <div className="border-b border-border px-5 py-4">
-          <div className="eyebrow">Inspector</div>
-          <p className="mt-1 text-[12px] leading-snug text-muted-foreground">
-            Select a node on the canvas to edit, or add a new one below.
-          </p>
-        </div>
-        <div className="flex-1 overflow-y-auto p-5">
-          <AddNodeForm
-            onAdd={(d) => {
-              addNode(d);
-            }}
-          />
-        </div>
-      </aside>
-    );
-  }
-
-  const data = node.data as PgmoNodeData;
-
   return (
     <aside className="flex h-full w-[340px] shrink-0 flex-col border-l border-border bg-paper">
+      <LegendPanel />
+      {!node ? (
+        <>
+          <div className="border-b border-border px-5 py-4">
+            <div className="eyebrow">Inspector</div>
+            <p className="mt-1 text-[12px] leading-snug text-muted-foreground">
+              Select a node on the canvas to edit, or add a new one below.
+            </p>
+          </div>
+          <div className="flex-1 overflow-y-auto p-5">
+            <AddNodeForm
+              onAdd={(d) => {
+                addNode(d);
+              }}
+            />
+          </div>
+        </>
+      ) : (
+        <NodeEditPanel
+          node={node}
+          data={node.data as PgmoNodeData}
+          linkedInitiatives={linkedInitiatives}
+          onUpdate={updateNode}
+          onDelete={deleteNode}
+          onClose={() => setSelected(null)}
+        />
+      )}
+    </aside>
+  );
+}
+
+function LegendPanel() {
+  const hideDimmed = usePgmo((s) => s.hideDimmed);
+  const setHideDimmed = usePgmo((s) => s.setHideDimmed);
+  const maturityFilter = usePgmo((s) => s.maturityFilter);
+  const setMaturityFilter = usePgmo((s) => s.setMaturityFilter);
+
+  return (
+    <div className="border-b border-border px-5 py-4">
+      <div className="eyebrow mb-2">Legend</div>
+      <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-[11px]">
+        <LegendItem glyph="◆" label="Workflow" />
+        <LegendItem glyph="▣" label="Data" />
+        <LegendItem glyph="●" label="System" />
+        <LegendItem glyph="—" label="Edge = flow" />
+      </div>
+      <div className="mt-2 flex items-center gap-1.5 border-t border-border pt-2">
+        <span className="h-2 w-2 rounded-sm bg-accent" />
+        <span className="text-[11px] text-foreground">Enterprise / shared resource</span>
+      </div>
+
+      {/* Dim / Hide toggle */}
+      <div className="mt-3 flex items-center gap-1">
+        <button
+          type="button"
+          onClick={() => setHideDimmed(false)}
+          className={
+            "rounded-sm border px-2.5 py-1 text-[11px] font-medium transition-colors " +
+            (!hideDimmed
+              ? "border-primary bg-primary/5 text-primary"
+              : "border-border text-muted-foreground hover:text-foreground")
+          }
+        >
+          Dim
+        </button>
+        <button
+          type="button"
+          onClick={() => setHideDimmed(true)}
+          className={
+            "rounded-sm border px-2.5 py-1 text-[11px] font-medium transition-colors " +
+            (hideDimmed
+              ? "border-primary bg-primary/5 text-primary"
+              : "border-border text-muted-foreground hover:text-foreground")
+          }
+        >
+          Hide
+        </button>
+      </div>
+
+      {/* Maturity filter */}
+      <div className="mt-3">
+        <div className="eyebrow mb-1.5">Maturity</div>
+        <div className="flex flex-wrap gap-1">
+          {([null, "current", "transition", "target"] as (Maturity | null)[]).map((m) => {
+            const active = maturityFilter === m;
+            const label = m ? MATURITY_META[m].label : "All";
+            const tone = m ? MATURITY_META[m].tone : undefined;
+            return (
+              <button
+                key={label}
+                type="button"
+                onClick={() => setMaturityFilter(m)}
+                className={
+                  "flex items-center gap-1 rounded-sm border px-2 py-1 text-[11px] font-medium transition-colors " +
+                  (active
+                    ? "border-primary bg-primary/5 text-primary"
+                    : "border-border text-muted-foreground hover:text-foreground")
+                }
+              >
+                {tone && <span className="h-2 w-2 rounded-full" style={{ backgroundColor: tone }} />}
+                {label}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function LegendItem({ glyph, label }: { glyph: string; label: string }) {
+  return (
+    <div className="flex items-center gap-1.5 text-foreground">
+      <span className="font-display text-primary">{glyph}</span>
+      <span>{label}</span>
+    </div>
+  );
+}
+
+function NodeEditPanel({
+  node,
+  data,
+  linkedInitiatives,
+  onUpdate,
+  onDelete,
+  onClose,
+}: {
+  node: { id: string; data: unknown };
+  data: PgmoNodeData;
+  linkedInitiatives: { id: string; name: string; linkedNodeIds: string[] }[];
+  onUpdate: (id: string, patch: Partial<PgmoNodeData>) => void;
+  onDelete: (id: string) => void;
+  onClose: () => void;
+}) {
+  return (
+    <>
       <div className="flex items-start justify-between border-b border-border px-5 py-4">
         <div>
           <div className="eyebrow">Node</div>
@@ -52,7 +166,7 @@ export function NodeInspector() {
         </div>
         <button
           type="button"
-          onClick={() => setSelected(null)}
+          onClick={onClose}
           className="text-muted-foreground hover:text-foreground"
           aria-label="Close"
         >
@@ -64,7 +178,7 @@ export function NodeInspector() {
           <input
             className="pgmo-input"
             value={data.label}
-            onChange={(e) => updateNode(node.id, { label: e.target.value })}
+            onChange={(e) => onUpdate(node.id, { label: e.target.value })}
           />
         </Field>
         <div className="grid grid-cols-2 gap-3">
@@ -72,7 +186,7 @@ export function NodeInspector() {
             <select
               className="pgmo-input"
               value={data.kind}
-              onChange={(e) => updateNode(node.id, { kind: e.target.value as NodeKind })}
+              onChange={(e) => onUpdate(node.id, { kind: e.target.value as NodeKind })}
             >
               <option value="workflow">Workflow</option>
               <option value="data">Data</option>
@@ -83,7 +197,7 @@ export function NodeInspector() {
             <select
               className="pgmo-input"
               value={data.layer}
-              onChange={(e) => updateNode(node.id, { layer: e.target.value as LayerId })}
+              onChange={(e) => onUpdate(node.id, { layer: e.target.value as LayerId })}
             >
               {LAYERS.map((l) => (
                 <option key={l.id} value={l.id}>
@@ -98,14 +212,14 @@ export function NodeInspector() {
             <input
               className="pgmo-input"
               value={data.owner ?? ""}
-              onChange={(e) => updateNode(node.id, { owner: e.target.value })}
+              onChange={(e) => onUpdate(node.id, { owner: e.target.value })}
             />
           </Field>
           <Field label="Vendor / tool">
             <input
               className="pgmo-input"
               value={data.vendor ?? ""}
-              onChange={(e) => updateNode(node.id, { vendor: e.target.value })}
+              onChange={(e) => onUpdate(node.id, { vendor: e.target.value })}
             />
           </Field>
         </div>
@@ -115,7 +229,7 @@ export function NodeInspector() {
               <button
                 key={m}
                 type="button"
-                onClick={() => updateNode(node.id, { maturity: m })}
+                onClick={() => onUpdate(node.id, { maturity: m })}
                 className={
                   "flex-1 rounded-sm border px-2 py-1.5 text-[11px] capitalize " +
                   (data.maturity === m
@@ -133,14 +247,14 @@ export function NodeInspector() {
             rows={3}
             className="pgmo-input resize-none"
             value={data.description ?? ""}
-            onChange={(e) => updateNode(node.id, { description: e.target.value })}
+            onChange={(e) => onUpdate(node.id, { description: e.target.value })}
           />
         </Field>
         <label className="flex items-center gap-2 text-[12px] text-foreground">
           <input
             type="checkbox"
             checked={!!data.shared}
-            onChange={(e) => updateNode(node.id, { shared: e.target.checked })}
+            onChange={(e) => onUpdate(node.id, { shared: e.target.checked })}
           />
           Mark as enterprise / shared resource
         </label>
@@ -171,13 +285,13 @@ export function NodeInspector() {
       <div className="border-t border-border px-5 py-3">
         <button
           type="button"
-          onClick={() => deleteNode(node.id)}
+          onClick={() => onDelete(node.id)}
           className="text-[12px] text-destructive hover:underline"
         >
           Delete node
         </button>
       </div>
-    </aside>
+    </>
   );
 }
 
