@@ -9,38 +9,109 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as RoadmapRouteImport } from './routes/roadmap'
+import { Route as InitiativesRouteImport } from './routes/initiatives'
+import { Route as ArchitectureRouteImport } from './routes/architecture'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as InitiativesIdRouteImport } from './routes/initiatives.$id'
 
+const RoadmapRoute = RoadmapRouteImport.update({
+  id: '/roadmap',
+  path: '/roadmap',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InitiativesRoute = InitiativesRouteImport.update({
+  id: '/initiatives',
+  path: '/initiatives',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ArchitectureRoute = ArchitectureRouteImport.update({
+  id: '/architecture',
+  path: '/architecture',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const InitiativesIdRoute = InitiativesIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => InitiativesRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/architecture': typeof ArchitectureRoute
+  '/initiatives': typeof InitiativesRouteWithChildren
+  '/roadmap': typeof RoadmapRoute
+  '/initiatives/$id': typeof InitiativesIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/architecture': typeof ArchitectureRoute
+  '/initiatives': typeof InitiativesRouteWithChildren
+  '/roadmap': typeof RoadmapRoute
+  '/initiatives/$id': typeof InitiativesIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/architecture': typeof ArchitectureRoute
+  '/initiatives': typeof InitiativesRouteWithChildren
+  '/roadmap': typeof RoadmapRoute
+  '/initiatives/$id': typeof InitiativesIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/architecture'
+    | '/initiatives'
+    | '/roadmap'
+    | '/initiatives/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/architecture' | '/initiatives' | '/roadmap' | '/initiatives/$id'
+  id:
+    | '__root__'
+    | '/'
+    | '/architecture'
+    | '/initiatives'
+    | '/roadmap'
+    | '/initiatives/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ArchitectureRoute: typeof ArchitectureRoute
+  InitiativesRoute: typeof InitiativesRouteWithChildren
+  RoadmapRoute: typeof RoadmapRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/roadmap': {
+      id: '/roadmap'
+      path: '/roadmap'
+      fullPath: '/roadmap'
+      preLoaderRoute: typeof RoadmapRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/initiatives': {
+      id: '/initiatives'
+      path: '/initiatives'
+      fullPath: '/initiatives'
+      preLoaderRoute: typeof InitiativesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/architecture': {
+      id: '/architecture'
+      path: '/architecture'
+      fullPath: '/architecture'
+      preLoaderRoute: typeof ArchitectureRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,22 +119,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/initiatives/$id': {
+      id: '/initiatives/$id'
+      path: '/$id'
+      fullPath: '/initiatives/$id'
+      preLoaderRoute: typeof InitiativesIdRouteImport
+      parentRoute: typeof InitiativesRoute
+    }
   }
 }
 
+interface InitiativesRouteChildren {
+  InitiativesIdRoute: typeof InitiativesIdRoute
+}
+
+const InitiativesRouteChildren: InitiativesRouteChildren = {
+  InitiativesIdRoute: InitiativesIdRoute,
+}
+
+const InitiativesRouteWithChildren = InitiativesRoute._addFileChildren(
+  InitiativesRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ArchitectureRoute: ArchitectureRoute,
+  InitiativesRoute: InitiativesRouteWithChildren,
+  RoadmapRoute: RoadmapRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

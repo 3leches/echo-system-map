@@ -1,29 +1,152 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
+import { AppShell } from "@/components/atlas/AppShell";
+import { LAYERS, STATUS_META } from "@/lib/atlas/types";
+import { useAtlas } from "@/lib/atlas/store";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Your App" },
-      { name: "description", content: "Replace this with a one-sentence description of your app." },
-      { property: "og:title", content: "Your App" },
-      { property: "og:description", content: "Replace this with a one-sentence description of your app." },
+      { title: "Atlas — Enterprise Architecture Studio" },
+      { name: "description", content: "Vision, current landscape, initiatives and target operating model in one connected view." },
+      { property: "og:title", content: "Atlas — Enterprise Architecture Studio" },
+      { property: "og:description", content: "Vision, current landscape, initiatives and target operating model in one connected view." },
     ],
   }),
   component: Index,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
 function Index() {
+  const nodes = useAtlas((s) => s.nodes);
+  const initiatives = useAtlas((s) => s.initiatives);
+  const shared = nodes.filter((n) => n.data.shared).length;
+  const byStatus = initiatives.reduce<Record<string, number>>((acc, i) => {
+    acc[i.status] = (acc[i.status] ?? 0) + 1;
+    return acc;
+  }, {});
+
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
+    <AppShell>
+      <section className="grid grid-cols-12 gap-12 border-b border-border pb-16">
+        <div className="col-span-12 lg:col-span-7">
+          <div className="eyebrow">An enterprise architecture studio</div>
+          <h1 className="mt-5 font-display text-[64px] leading-[1.02] text-foreground">
+            Walk into any company.
+            <br />
+            See how it actually runs.
+          </h1>
+          <p className="mt-6 max-w-xl text-[15px] leading-relaxed text-muted-foreground">
+            Atlas maps the workflows, data and systems that move a business — layer by layer,
+            desk by desk. Trace what exists today, mark the shared enterprise platforms,
+            and align every initiative on the roadmap to the target operating model.
+          </p>
+          <div className="mt-10 flex gap-3">
+            <Link
+              to="/architecture"
+              className="rounded-sm bg-primary px-5 py-3 text-[13px] font-medium tracking-wide text-primary-foreground hover:bg-forest-deep"
+            >
+              Open the architecture canvas
+            </Link>
+            <Link
+              to="/initiatives"
+              className="rounded-sm border border-border bg-paper px-5 py-3 text-[13px] font-medium tracking-wide text-foreground hover:border-primary"
+            >
+              Review initiatives
+            </Link>
+          </div>
+        </div>
+
+        <aside className="col-span-12 space-y-3 lg:col-span-5">
+          <Stat eyebrow="Mapped" value={String(nodes.length)} label="workflow · data · system nodes" />
+          <Stat eyebrow="Enterprise" value={String(shared)} label="shared platforms identified" />
+          <Stat eyebrow="In flight" value={String(byStatus["in_flight"] ?? 0)} label="initiatives moving today" />
+        </aside>
+      </section>
+
+      <section className="grid grid-cols-12 gap-12 py-16">
+        <div className="col-span-12 lg:col-span-4">
+          <div className="eyebrow">The four-state view</div>
+          <h2 className="mt-3 font-display text-3xl text-foreground">
+            Vision, current, initiatives, target.
+          </h2>
+          <p className="mt-4 text-[14px] leading-relaxed text-muted-foreground">
+            Every node and every initiative carries its place in the journey, so the
+            roadmap is never separate from the architecture — it is the architecture,
+            moving in time.
+          </p>
+        </div>
+        <div className="col-span-12 grid grid-cols-2 gap-px overflow-hidden rounded-sm border border-border bg-border lg:col-span-8">
+          {[
+            { e: "01 Vision", t: "Why the firm exists, and what the target operating model serves." },
+            { e: "02 Current", t: "Today's workflows, data flows, and systems across every layer." },
+            { e: "03 Initiatives", t: "Each captured against a standard template — linked to nodes." },
+            { e: "04 Target", t: "The future-state architecture the initiatives compose into." },
+          ].map((b) => (
+            <div key={b.e} className="bg-paper p-7">
+              <div className="eyebrow">{b.e}</div>
+              <p className="mt-3 font-display text-[19px] leading-snug text-foreground">{b.t}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="border-t border-border py-16">
+        <div className="flex items-baseline justify-between">
+          <div>
+            <div className="eyebrow">Organisation layers</div>
+            <h2 className="mt-3 font-display text-3xl text-foreground">
+              Every layer of the firm, in one canvas.
+            </h2>
+          </div>
+          <Link to="/architecture" className="text-[13px] text-primary hover:underline">
+            View the canvas →
+          </Link>
+        </div>
+        <div className="mt-8 grid grid-cols-2 gap-px overflow-hidden rounded-sm border border-border bg-border md:grid-cols-4">
+          {LAYERS.map((l) => (
+            <div key={l.id} className="bg-paper p-5" style={{ boxShadow: `inset 0 3px 0 ${l.hue}` }}>
+              <div className="font-display text-[17px] text-foreground">{l.label}</div>
+              <div className="mt-1 text-[11px] leading-snug text-muted-foreground">{l.description}</div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="border-t border-border py-16">
+        <div className="flex items-baseline justify-between">
+          <div>
+            <div className="eyebrow">Initiative pipeline</div>
+            <h2 className="mt-3 font-display text-3xl text-foreground">
+              Where the firm is investing.
+            </h2>
+          </div>
+          <Link to="/roadmap" className="text-[13px] text-primary hover:underline">
+            Open the roadmap →
+          </Link>
+        </div>
+        <div className="mt-8 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6">
+          {Object.entries(STATUS_META).map(([k, m]) => (
+            <div key={k} className="rounded-sm border border-border bg-paper p-4">
+              <div className="text-[10px] uppercase tracking-wider" style={{ color: m.tone }}>
+                {m.label}
+              </div>
+              <div className="mt-1 font-display text-3xl text-foreground">{byStatus[k] ?? 0}</div>
+            </div>
+          ))}
+        </div>
+      </section>
+    </AppShell>
+  );
+}
+
+function Stat({ eyebrow, value, label }: { eyebrow: string; value: string; label: string }) {
+  return (
+    <div className="flex items-baseline justify-between border-b border-border py-5">
+      <div>
+        <div className="eyebrow">{eyebrow}</div>
+        <div className="mt-1 text-[13px] text-muted-foreground">{label}</div>
+      </div>
+      <div className="font-display text-5xl text-primary">{value}</div>
     </div>
   );
 }
