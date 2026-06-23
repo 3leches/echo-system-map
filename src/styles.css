@@ -74,7 +74,7 @@
 :root {
   --radius: 0.25rem;
 
-  /* Elliott-inspired palette */
+  /* warm color palette */
   --cream:   oklch(0.965 0.012 85);     /* warm off-white page */
   --paper:   oklch(0.985 0.006 85);     /* card surface */
   --sand:    oklch(0.905 0.018 80);     /* subtle warm border / sand */
