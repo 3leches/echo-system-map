@@ -8,9 +8,9 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "PgMO — Enterprise Program Management Studio" },
-      { name: "description", content: "Vision, current landscape, initiatives and target operating model in one connected view." },
+      { name: "description", content: "The firm's operating system for program delivery. Connect vision, architecture, initiatives and target operating model in one coherent view." },
       { property: "og:title", content: "PgMO — Enterprise Program Management Studio" },
-      { property: "og:description", content: "Vision, current landscape, initiatives and target operating model in one connected view." },
+      { property: "og:description", content: "The firm's operating system for program delivery. Connect vision, architecture, initiatives and target operating model in one coherent view." },
     ],
   }),
   component: Index,
@@ -29,23 +29,24 @@ function Index() {
     <AppShell>
       <section className="grid grid-cols-12 gap-12 border-b border-border pb-16">
         <div className="col-span-12 lg:col-span-7">
-          <div className="eyebrow">An enterprise architecture studio</div>
+          <div className="eyebrow">Program Management Office</div>
           <h1 className="mt-5 font-display text-[64px] leading-[1.02] text-foreground">
-            Walk into any company.
+            The leverage to deliver
             <br />
-            See how it actually runs.
+            complex initiatives.
           </h1>
           <p className="mt-6 max-w-xl text-[15px] leading-relaxed text-muted-foreground">
-            PgMO maps the workflows, data and systems that move a business — layer by layer,
-            desk by desk. Trace what exists today, mark the shared enterprise platforms,
-            and align every initiative on the roadmap to the target operating model.
+            PgMO is the firm's operating system for program delivery. It connects
+            vision, current-state architecture, live initiatives and the target
+            operating model into one coherent view — so leadership knows what is
+            happening, why it matters, and how it composes into the future firm.
           </p>
           <div className="mt-10 flex gap-3">
             <Link
               to="/architecture"
               className="rounded-sm bg-primary px-5 py-3 text-[13px] font-medium tracking-wide text-primary-foreground hover:bg-forest-deep"
             >
-              Open the architecture canvas
+              Explore the architecture canvas
             </Link>
             <Link
               to="/initiatives"
@@ -67,20 +68,21 @@ function Index() {
         <div className="col-span-12 lg:col-span-4">
           <div className="eyebrow">The four-state view</div>
           <h2 className="mt-3 font-display text-3xl text-foreground">
-            Vision, current, initiatives, target.
+            From vision to delivery.
           </h2>
           <p className="mt-4 text-[14px] leading-relaxed text-muted-foreground">
-            Every node and every initiative carries its place in the journey, so the
-            roadmap is never separate from the architecture — it is the architecture,
-            moving in time.
+            PgMO treats every program as a living bridge between where the firm is
+            and where it needs to be. The canvas keeps vision, current state,
+            active initiatives and target model in one place — so nothing drifts
+            out of alignment.
           </p>
         </div>
         <div className="col-span-12 grid grid-cols-2 gap-px overflow-hidden rounded-sm border border-border bg-border lg:col-span-8">
           {[
-            { e: "01 Vision", t: "Why the firm exists, and what the target operating model serves." },
-            { e: "02 Current", t: "Today's workflows, data flows, and systems across every layer." },
-            { e: "03 Initiatives", t: "Each captured against a standard template — linked to nodes." },
-            { e: "04 Target", t: "The future-state architecture the initiatives compose into." },
+            { e: "01 Vision", t: "The strategic intent and target operating model the firm is building toward." },
+            { e: "02 Current", t: "The live landscape of workflows, data and systems — mapped by layer." },
+            { e: "03 Initiatives", t: "Every program captured in a standard template, linked to the architecture it changes." },
+            { e: "04 Target", t: "The future-state model initiatives compose into, with clear dependencies and KPIs." },
           ].map((b) => (
             <div key={b.e} className="bg-paper p-7">
               <div className="eyebrow">{b.e}</div>
@@ -93,7 +95,7 @@ function Index() {
       <section className="border-t border-border py-16">
         <div className="flex items-baseline justify-between">
           <div>
-            <div className="eyebrow">Organisation layers</div>
+            <div className="eyebrow">Operating model layers</div>
             <h2 className="mt-3 font-display text-3xl text-foreground">
               Every layer of the firm, in one canvas.
             </h2>
