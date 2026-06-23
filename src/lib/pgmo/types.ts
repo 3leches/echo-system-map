@@ -85,6 +85,12 @@ export const LAYERS: { id: LayerId; label: string; hue: string; description: str
   { id: "enterprise", label: "Enterprise (shared)", hue: "oklch(0.82 0.05 60)", description: "Shared platforms, data, identity, infrastructure" },
 ];
 
+export const MATURITY_META: Record<Maturity, { label: string; tone: string }> = {
+  current:    { label: "Current",    tone: "oklch(0.45 0.08 145)" },
+  transition: { label: "Transition", tone: "oklch(0.68 0.14 75)" },
+  target:     { label: "Target",     tone: "oklch(0.60 0.10 240)" },
+};
+
 export const STATUS_META: Record<InitiativeStatus, { label: string; tone: string }> = {
   proposed:   { label: "Proposed",   tone: "oklch(0.65 0.02 80)" },
   approved:   { label: "Approved",   tone: "oklch(0.55 0.08 230)" },
