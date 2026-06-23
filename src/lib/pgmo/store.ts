@@ -27,12 +27,14 @@ interface PgmoState {
   highlightLayer: LayerId | null;
   hideDimmed: boolean;
   selectedNodeId: string | null;
+  maturityFilter: Maturity | null;
 
   setLens: (l: Lens) => void;
   toggleLayer: (l: LayerId) => void;
   setHighlight: (l: LayerId | null) => void;
   setHideDimmed: (v: boolean) => void;
   setSelected: (id: string | null) => void;
+  setMaturityFilter: (m: Maturity | null) => void;
 
   onNodesChange: (changes: NodeChange[]) => void;
   onEdgesChange: (changes: EdgeChange[]) => void;
