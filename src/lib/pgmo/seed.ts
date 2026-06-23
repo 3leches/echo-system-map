@@ -42,10 +42,10 @@ export const SEED_NODES: SeedNode[] = [
   { id: "n_capact",    x: 320, data: { label: "Capital Activity", kind: "workflow", layer: "investor_relations", owner: "IR", maturity: "current" } },
 
   // Enterprise (shared)
-  { id: "n_sec_master",x: 80,  data: { label: "Security Master", kind: "data", layer: "enterprise", owner: "Data Office", shared: true } },
-  { id: "n_party",     x: 320, data: { label: "Party / Entity Master", kind: "data", layer: "enterprise", owner: "Data Office", shared: true } },
+  { id: "n_sec_master",x: 80,  data: { label: "Security Master", kind: "data", layer: "enterprise", owner: "Data Office", shared: true, maturity: "current" } },
+  { id: "n_party",     x: 320, data: { label: "Party / Entity Master", kind: "data", layer: "enterprise", owner: "Data Office", shared: true, maturity: "current" } },
   { id: "n_dwh",       x: 560, data: { label: "Enterprise Data Platform", kind: "system", layer: "enterprise", vendor: "Snowflake", owner: "Data Office", shared: true, maturity: "transition" } },
-  { id: "n_iam",       x: 800, data: { label: "Identity & Access", kind: "system", layer: "enterprise", vendor: "Okta", owner: "IT", shared: true } },
+  { id: "n_iam",       x: 800, data: { label: "Identity & Access", kind: "system", layer: "enterprise", vendor: "Okta", owner: "IT", shared: true, maturity: "current" } },
 ];
 
 export const SEED_EDGES: Array<{ id: string; source: string; target: string; data: PgmoEdgeData; label?: string }> = [
