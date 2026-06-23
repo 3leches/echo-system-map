@@ -39,6 +39,9 @@ function Inner() {
   const lens = usePgmo((s) => s.lens);
   const setLens = usePgmo((s) => s.setLens);
   const visibleLayers = usePgmo((s) => s.visibleLayers);
+  const highlightLayer = usePgmo((s) => s.highlightLayer);
+  const hideDimmed = usePgmo((s) => s.hideDimmed);
+  const setHideDimmed = usePgmo((s) => s.setHideDimmed);
   const setSelected = usePgmo((s) => s.setSelected);
   const onNodesChange = usePgmo((s) => s.onNodesChange);
   const onEdgesChange = usePgmo((s) => s.onEdgesChange);
@@ -68,10 +71,22 @@ function Inner() {
     });
   }, [edges, lens]);
 
-  const filteredNodes = useMemo(
-    () => nodes.filter((n) => visibleLayers[n.data.layer]),
-    [nodes, visibleLayers],
+  const isDimmed = useCallback(
+    (n: typeof nodes[number]) => {
+      return (
+        (lens !== n.data.kind && !(lens === "system" && n.data.shared)) ||
+        (highlightLayer !== null && highlightLayer !== n.data.layer)
+      );
+    },
+    [lens, highlightLayer],
   );
+
+  const filteredNodes = useMemo(() => {
+    return nodes
+      .filter((n) => visibleLayers[n.data.layer])
+      .filter((n) => !hideDimmed || !isDimmed(n));
+  }, [nodes, visibleLayers, hideDimmed, isDimmed]);
+
   const filteredEdges = useMemo(() => {
     const ids = new Set(filteredNodes.map((n) => n.id));
     return styledEdges.filter((e) => ids.has(e.source) && ids.has(e.target));
