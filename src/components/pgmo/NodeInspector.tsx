@@ -1,6 +1,18 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { usePgmo } from "@/lib/pgmo/store";
-import { LAYERS, MATURITY_META, type PgmoNodeData, type LayerId, type NodeKind, type Maturity } from "@/lib/pgmo/types";
+import {
+  LAYERS,
+  MATURITY_META,
+  AUTOMATION_META,
+  EXECUTION_META,
+  type PgmoNodeData,
+  type LayerId,
+  type NodeKind,
+  type Maturity,
+  type Automation,
+  type Execution,
+  type WorkflowStep,
+} from "@/lib/pgmo/types";
 import { Link } from "@tanstack/react-router";
 
 export function NodeInspector() {
@@ -258,6 +270,10 @@ function NodeEditPanel({
           />
           Mark as enterprise / shared resource
         </label>
+
+        {data.kind === "workflow" && (
+          <WorkflowStepsSection nodeId={node.id} data={data} onUpdate={onUpdate} />
+        )}
 
         <div>
           <div className="eyebrow mb-2">Linked initiatives</div>
