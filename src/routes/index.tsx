@@ -95,7 +95,7 @@ function Index() {
       <section className="border-t border-border py-16">
         <div className="flex items-baseline justify-between">
           <div>
-            <div className="eyebrow">Organisation layers</div>
+            <div className="eyebrow">Operating model layers</div>
             <h2 className="mt-3 font-display text-3xl text-foreground">
               Every layer of the firm, in one canvas.
             </h2>
