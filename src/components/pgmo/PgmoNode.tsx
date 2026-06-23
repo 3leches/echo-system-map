@@ -65,6 +65,13 @@ export function PgmoNode({ id, data, selected }: NodeProps<PgmoNodeData>) {
           </span>
         )}
       </div>
+      {data.maturity && (
+        <span
+          className="absolute right-2 top-2 h-[7px] w-[7px] rounded-full"
+          style={{ backgroundColor: MATURITY_META[data.maturity].tone }}
+          title={MATURITY_META[data.maturity].label}
+        />
+      )}
       <Handle type="source" position={Position.Right} />
     </div>
   );
