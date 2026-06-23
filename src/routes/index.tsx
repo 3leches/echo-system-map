@@ -68,20 +68,21 @@ function Index() {
         <div className="col-span-12 lg:col-span-4">
           <div className="eyebrow">The four-state view</div>
           <h2 className="mt-3 font-display text-3xl text-foreground">
-            Vision, current, initiatives, target.
+            From vision to delivery.
           </h2>
           <p className="mt-4 text-[14px] leading-relaxed text-muted-foreground">
-            Every node and every initiative carries its place in the journey, so the
-            roadmap is never separate from the architecture — it is the architecture,
-            moving in time.
+            PgMO treats every program as a living bridge between where the firm is
+            and where it needs to be. The canvas keeps vision, current state,
+            active initiatives and target model in one place — so nothing drifts
+            out of alignment.
           </p>
         </div>
         <div className="col-span-12 grid grid-cols-2 gap-px overflow-hidden rounded-sm border border-border bg-border lg:col-span-8">
           {[
-            { e: "01 Vision", t: "Why the firm exists, and what the target operating model serves." },
-            { e: "02 Current", t: "Today's workflows, data flows, and systems across every layer." },
-            { e: "03 Initiatives", t: "Each captured against a standard template — linked to nodes." },
-            { e: "04 Target", t: "The future-state architecture the initiatives compose into." },
+            { e: "01 Vision", t: "The strategic intent and target operating model the firm is building toward." },
+            { e: "02 Current", t: "The live landscape of workflows, data and systems — mapped by layer." },
+            { e: "03 Initiatives", t: "Every program captured in a standard template, linked to the architecture it changes." },
+            { e: "04 Target", t: "The future-state model initiatives compose into, with clear dependencies and KPIs." },
           ].map((b) => (
             <div key={b.e} className="bg-paper p-7">
               <div className="eyebrow">{b.e}</div>
