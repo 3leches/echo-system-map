@@ -39,7 +39,7 @@ export const SEED_NODES: SeedNode[] = [
 
   // IR
   { id: "n_ir_portal", x: 80,  data: { label: "Investor Portal", kind: "system", layer: "investor_relations", owner: "IR", maturity: "transition" } },
-  { id: "n_capact",    x: 320, data: { label: "Capital Activity", kind: "workflow", layer: "investor_relations", owner: "IR" } },
+  { id: "n_capact",    x: 320, data: { label: "Capital Activity", kind: "workflow", layer: "investor_relations", owner: "IR", maturity: "current" } },
 
   // Enterprise (shared)
   { id: "n_sec_master",x: 80,  data: { label: "Security Master", kind: "data", layer: "enterprise", owner: "Data Office", shared: true } },
