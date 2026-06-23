@@ -1,6 +1,6 @@
 import { Handle, Position, type NodeProps } from "reactflow";
 import type { PgmoNodeData } from "@/lib/pgmo/types";
-import { LAYERS, MATURITY_META } from "@/lib/pgmo/types";
+import { LAYERS, MATURITY_META, AUTOMATION_META, EXECUTION_META } from "@/lib/pgmo/types";
 import { usePgmo } from "@/lib/pgmo/store";
 
 const KIND_GLYPH: Record<PgmoNodeData["kind"], string> = {
@@ -65,6 +65,39 @@ export function PgmoNode({ id, data, selected }: NodeProps<PgmoNodeData>) {
           </span>
         )}
       </div>
+      {data.kind === "workflow" && (data.automation || data.execution || (data.steps?.length ?? 0) > 0) && (
+        <div className="mt-1.5 flex flex-wrap items-center gap-1 border-t border-border pt-1.5">
+          {data.automation && (
+            <span
+              className="inline-flex items-center gap-1 rounded-sm px-1.5 py-px text-[9px] font-medium"
+              style={{
+                color: AUTOMATION_META[data.automation].tone,
+                backgroundColor: `color-mix(in oklch, ${AUTOMATION_META[data.automation].tone} 12%, transparent)`,
+              }}
+              title={`Automation: ${AUTOMATION_META[data.automation].label}`}
+            >
+              {AUTOMATION_META[data.automation].label}
+            </span>
+          )}
+          {data.execution && (
+            <span
+              className="inline-flex items-center gap-1 rounded-sm px-1.5 py-px text-[9px] font-medium"
+              style={{
+                color: EXECUTION_META[data.execution].tone,
+                backgroundColor: `color-mix(in oklch, ${EXECUTION_META[data.execution].tone} 12%, transparent)`,
+              }}
+              title={`Execution: ${EXECUTION_META[data.execution].label}`}
+            >
+              {EXECUTION_META[data.execution].label}
+            </span>
+          )}
+          {(data.steps?.length ?? 0) > 0 && (
+            <span className="ml-auto text-[9px] font-medium text-muted-foreground">
+              {data.steps!.length} step{data.steps!.length === 1 ? "" : "s"}
+            </span>
+          )}
+        </div>
+      )}
       {data.maturity && (
         <span
           className="absolute right-2 top-2 h-[7px] w-[7px] rounded-full"
