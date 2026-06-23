@@ -15,7 +15,7 @@ export function AppShell({ children, full = false }: { children: ReactNode; full
       <header className="border-b border-border bg-paper/80 backdrop-blur">
         <div className="mx-auto flex h-16 max-w-[1600px] items-center justify-between px-8">
           <Link to="/" className="flex items-baseline gap-3">
-            <span className="font-display text-2xl tracking-[0.18em] text-primary">ATLAS</span>
+            <span className="font-display text-2xl tracking-[0.18em] text-primary">PgMO</span>
             <span className="eyebrow hidden sm:inline">Enterprise Architecture Studio</span>
           </Link>
           <nav className="flex items-center gap-1">
@@ -43,7 +43,7 @@ export function AppShell({ children, full = false }: { children: ReactNode; full
       </main>
       <footer className="border-t border-border py-6">
         <div className="mx-auto flex max-w-[1600px] items-center justify-between px-8 text-xs text-muted-foreground">
-          <span>© Atlas Studio</span>
+          <span>© PgMO Studio</span>
           <span className="eyebrow">A prototype for enterprise alignment</span>
         </div>
       </footer>

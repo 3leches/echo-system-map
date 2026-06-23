@@ -83,9 +83,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Atlas — Enterprise Architecture Studio" },
+      { title: "PgMO — Enterprise Architecture Studio" },
       { name: "description", content: "Map workflows, data and systems across the enterprise. Align initiatives and roadmaps to a target operating model." },
-      { property: "og:title", content: "Atlas — Enterprise Architecture Studio" },
+      { property: "og:title", content: "PgMO — Enterprise Architecture Studio" },
       { property: "og:description", content: "Map workflows, data and systems across the enterprise. Align initiatives and roadmaps to a target operating model." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },

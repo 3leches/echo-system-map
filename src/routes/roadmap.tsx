@@ -1,15 +1,15 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo } from "react";
-import { AppShell } from "@/components/atlas/AppShell";
-import { useAtlas } from "@/lib/atlas/store";
-import { LAYERS, STATUS_META, type LayerId } from "@/lib/atlas/types";
+import { AppShell } from "@/components/pgmo/AppShell";
+import { usePgmo } from "@/lib/pgmo/store";
+import { LAYERS, STATUS_META, type LayerId } from "@/lib/pgmo/types";
 
 export const Route = createFileRoute("/roadmap")({
   head: () => ({
     meta: [
-      { title: "Roadmap — Atlas" },
+      { title: "Roadmap — PgMO" },
       { name: "description", content: "A timeline view of every initiative, grouped by layer, computed from the standard initiative template." },
-      { property: "og:title", content: "Roadmap — Atlas" },
+      { property: "og:title", content: "Roadmap — PgMO" },
       { property: "og:description", content: "A timeline view of every initiative, grouped by layer." },
     ],
   }),
@@ -17,7 +17,7 @@ export const Route = createFileRoute("/roadmap")({
 });
 
 function Roadmap() {
-  const initiatives = useAtlas((s) => s.initiatives);
+  const initiatives = usePgmo((s) => s.initiatives);
 
   const { months, minMs, totalMs } = useMemo(() => {
     if (initiatives.length === 0) {
