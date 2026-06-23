@@ -1,6 +1,6 @@
 import { Handle, Position, type NodeProps } from "reactflow";
 import type { PgmoNodeData } from "@/lib/pgmo/types";
-import { LAYERS } from "@/lib/pgmo/types";
+import { LAYERS, MATURITY_META } from "@/lib/pgmo/types";
 import { usePgmo } from "@/lib/pgmo/store";
 
 const KIND_GLYPH: Record<PgmoNodeData["kind"], string> = {
