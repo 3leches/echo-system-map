@@ -1,15 +1,15 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { AppShell } from "@/components/atlas/AppShell";
-import { useAtlas, emptyInitiative } from "@/lib/atlas/store";
-import { LAYERS, STATUS_META, type InitiativeStatus } from "@/lib/atlas/types";
+import { AppShell } from "@/components/pgmo/AppShell";
+import { usePgmo, emptyInitiative } from "@/lib/pgmo/store";
+import { LAYERS, STATUS_META, type InitiativeStatus } from "@/lib/pgmo/types";
 import { useState } from "react";
 
 export const Route = createFileRoute("/initiatives")({
   head: () => ({
     meta: [
-      { title: "Initiatives — Atlas" },
+      { title: "Initiatives — PgMO" },
       { name: "description", content: "All initiatives, captured against a single standard template. The roadmap is derived from these." },
-      { property: "og:title", content: "Initiatives — Atlas" },
+      { property: "og:title", content: "Initiatives — PgMO" },
       { property: "og:description", content: "All initiatives, captured against a single standard template." },
     ],
   }),
@@ -17,8 +17,8 @@ export const Route = createFileRoute("/initiatives")({
 });
 
 function InitiativesList() {
-  const initiatives = useAtlas((s) => s.initiatives);
-  const upsert = useAtlas((s) => s.upsertInitiative);
+  const initiatives = usePgmo((s) => s.initiatives);
+  const upsert = usePgmo((s) => s.upsertInitiative);
   const navigate = useNavigate();
   const [filter, setFilter] = useState<InitiativeStatus | "all">("all");
 

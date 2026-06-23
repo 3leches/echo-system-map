@@ -8,7 +8,7 @@ import {
   type EdgeChange,
   type Connection,
 } from "reactflow";
-import type { AtlasEdgeData, AtlasNodeData, Initiative, LayerId, Lens } from "./types";
+import type { PgmoEdgeData, PgmoNodeData, Initiative, LayerId, Lens } from "./types";
 import { LAYERS } from "./types";
 import { buildInitialFlow, SEED_INITIATIVES } from "./seed";
 
@@ -18,9 +18,9 @@ export const LANE_TOP = 24;
 const layerOrder = LAYERS.map((l) => l.id);
 const initial = buildInitialFlow(layerOrder, LANE_HEIGHT, LANE_TOP);
 
-interface AtlasState {
-  nodes: Node<AtlasNodeData>[];
-  edges: Edge<AtlasEdgeData>[];
+interface PgmoState {
+  nodes: Node<PgmoNodeData>[];
+  edges: Edge<PgmoEdgeData>[];
   initiatives: Initiative[];
   lens: Lens;
   visibleLayers: Record<LayerId, boolean>;
@@ -36,9 +36,9 @@ interface AtlasState {
   onEdgesChange: (changes: EdgeChange[]) => void;
   onConnect: (c: Connection) => void;
 
-  updateNode: (id: string, patch: Partial<AtlasNodeData>) => void;
+  updateNode: (id: string, patch: Partial<PgmoNodeData>) => void;
   deleteNode: (id: string) => void;
-  addNode: (data: AtlasNodeData, position?: { x: number; y: number }) => string;
+  addNode: (data: PgmoNodeData, position?: { x: number; y: number }) => string;
 
   upsertInitiative: (i: Initiative) => void;
   deleteInitiative: (id: string) => void;
@@ -46,7 +46,7 @@ interface AtlasState {
   unlinkInitiativeFromNode: (initiativeId: string, nodeId: string) => void;
 }
 
-export const useAtlas = create<AtlasState>((set, get) => ({
+export const usePgmo = create<PgmoState>((set, get) => ({
   nodes: initial.nodes,
   edges: initial.edges,
   initiatives: SEED_INITIATIVES,
@@ -62,15 +62,15 @@ export const useAtlas = create<AtlasState>((set, get) => ({
   setSelected: (id) => set({ selectedNodeId: id }),
 
   onNodesChange: (changes) =>
-    set((s) => ({ nodes: applyNodeChanges(changes, s.nodes) as Node<AtlasNodeData>[] })),
+    set((s) => ({ nodes: applyNodeChanges(changes, s.nodes) as Node<PgmoNodeData>[] })),
   onEdgesChange: (changes) =>
-    set((s) => ({ edges: applyEdgeChanges(changes, s.edges) as Edge<AtlasEdgeData>[] })),
+    set((s) => ({ edges: applyEdgeChanges(changes, s.edges) as Edge<PgmoEdgeData>[] })),
   onConnect: (c) =>
     set((s) => ({
       edges: addEdge(
-        { ...c, type: "smoothstep", data: { kind: s.lens } } as Edge<AtlasEdgeData>,
+        { ...c, type: "smoothstep", data: { kind: s.lens } } as Edge<PgmoEdgeData>,
         s.edges,
-      ) as Edge<AtlasEdgeData>[],
+      ) as Edge<PgmoEdgeData>[],
     })),
 
   updateNode: (id, patch) =>
@@ -88,7 +88,7 @@ export const useAtlas = create<AtlasState>((set, get) => ({
     const laneIdx = layerOrder.indexOf(data.layer);
     const pos = position ?? { x: 280, y: LANE_TOP + laneIdx * LANE_HEIGHT + 60 };
     set((s) => ({
-      nodes: [...s.nodes, { id, type: "atlas", position: pos, data }],
+      nodes: [...s.nodes, { id, type: "pgmo", position: pos, data }],
       selectedNodeId: id,
     }));
     return id;

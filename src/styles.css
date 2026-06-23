@@ -189,7 +189,7 @@
 .react-flow__controls-button { background: var(--paper); border-bottom: 1px solid var(--sand); color: var(--ink); }
 .react-flow__attribution { background: transparent; color: var(--taupe); font-size: 10px; }
 
-@utility atlas-input {
+@utility pgmo-input {
   display: block;
   width: 100%;
   border-radius: 2px;

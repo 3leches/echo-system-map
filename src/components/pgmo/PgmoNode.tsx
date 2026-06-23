@@ -1,24 +1,24 @@
 import { Handle, Position, type NodeProps } from "reactflow";
-import type { AtlasNodeData } from "@/lib/atlas/types";
-import { LAYERS } from "@/lib/atlas/types";
-import { useAtlas } from "@/lib/atlas/store";
+import type { PgmoNodeData } from "@/lib/pgmo/types";
+import { LAYERS } from "@/lib/pgmo/types";
+import { usePgmo } from "@/lib/pgmo/store";
 
-const KIND_GLYPH: Record<AtlasNodeData["kind"], string> = {
+const KIND_GLYPH: Record<PgmoNodeData["kind"], string> = {
   workflow: "◆",
   data: "▣",
   system: "●",
 };
-const KIND_LABEL: Record<AtlasNodeData["kind"], string> = {
+const KIND_LABEL: Record<PgmoNodeData["kind"], string> = {
   workflow: "Workflow",
   data: "Data",
   system: "System",
 };
 
-export function AtlasNode({ id, data, selected }: NodeProps<AtlasNodeData>) {
+export function PgmoNode({ id, data, selected }: NodeProps<PgmoNodeData>) {
   const layer = LAYERS.find((l) => l.id === data.layer);
-  const lens = useAtlas((s) => s.lens);
-  const highlight = useAtlas((s) => s.highlightLayer);
-  const initiatives = useAtlas((s) => s.initiatives);
+  const lens = usePgmo((s) => s.lens);
+  const highlight = usePgmo((s) => s.highlightLayer);
+  const initiatives = usePgmo((s) => s.initiatives);
   const linkedCount = initiatives.filter((i) => i.linkedNodeIds.includes(id)).length;
 
   const dim =

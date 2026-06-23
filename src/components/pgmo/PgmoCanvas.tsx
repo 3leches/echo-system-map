@@ -11,13 +11,13 @@ import ReactFlow, {
 import "reactflow/dist/style.css";
 
 import { LaneBackground } from "./LaneBackground";
-import { AtlasNode } from "./AtlasNode";
+import { PgmoNode } from "./PgmoNode";
 import { LayerRail } from "./LayerRail";
 import { NodeInspector } from "./NodeInspector";
-import { useAtlas } from "@/lib/atlas/store";
-import type { AtlasEdgeData, Lens } from "@/lib/atlas/types";
+import { usePgmo } from "@/lib/pgmo/store";
+import type { PgmoEdgeData, Lens } from "@/lib/pgmo/types";
 
-const nodeTypes: NodeTypes = { atlas: AtlasNode };
+const nodeTypes: NodeTypes = { pgmo: PgmoNode };
 
 const LENS_TABS: { id: Lens; label: string; sub: string }[] = [
   { id: "workflow", label: "Workflow", sub: "Process & steps" },
@@ -25,7 +25,7 @@ const LENS_TABS: { id: Lens; label: string; sub: string }[] = [
   { id: "system",   label: "Systems",  sub: "Apps & integrations" },
 ];
 
-export function AtlasCanvas() {
+export function PgmoCanvas() {
   return (
     <ReactFlowProvider>
       <Inner />
@@ -34,18 +34,18 @@ export function AtlasCanvas() {
 }
 
 function Inner() {
-  const nodes = useAtlas((s) => s.nodes);
-  const edges = useAtlas((s) => s.edges);
-  const lens = useAtlas((s) => s.lens);
-  const setLens = useAtlas((s) => s.setLens);
-  const visibleLayers = useAtlas((s) => s.visibleLayers);
-  const setSelected = useAtlas((s) => s.setSelected);
-  const onNodesChange = useAtlas((s) => s.onNodesChange);
-  const onEdgesChange = useAtlas((s) => s.onEdgesChange);
-  const onConnect = useAtlas((s) => s.onConnect);
+  const nodes = usePgmo((s) => s.nodes);
+  const edges = usePgmo((s) => s.edges);
+  const lens = usePgmo((s) => s.lens);
+  const setLens = usePgmo((s) => s.setLens);
+  const visibleLayers = usePgmo((s) => s.visibleLayers);
+  const setSelected = usePgmo((s) => s.setSelected);
+  const onNodesChange = usePgmo((s) => s.onNodesChange);
+  const onEdgesChange = usePgmo((s) => s.onEdgesChange);
+  const onConnect = usePgmo((s) => s.onConnect);
 
   // Filter edges by current lens (with shared system nodes still showing)
-  const styledEdges: Edge<AtlasEdgeData>[] = useMemo(() => {
+  const styledEdges: Edge<PgmoEdgeData>[] = useMemo(() => {
     return edges.map((e) => {
       const active = e.data?.kind === lens;
       return {
@@ -64,7 +64,7 @@ function Inner() {
         },
         labelBgStyle: { fill: "var(--paper)" },
         labelStyle: { fontSize: 10, fill: "var(--taupe)" },
-      } as Edge<AtlasEdgeData>;
+      } as Edge<PgmoEdgeData>;
     });
   }, [edges, lens]);
 

@@ -1,13 +1,13 @@
 import { useStore } from "reactflow";
-import { LAYERS } from "@/lib/atlas/types";
-import { LANE_HEIGHT, LANE_TOP, useAtlas } from "@/lib/atlas/store";
+import { LAYERS } from "@/lib/pgmo/types";
+import { LANE_HEIGHT, LANE_TOP, usePgmo } from "@/lib/pgmo/store";
 
 // Renders horizontal swimlane bands in WORLD coordinates by reading
 // the React Flow viewport transform. Place as a child of <ReactFlow>.
 export function LaneBackground() {
   const [tx, ty, scale] = useStore((s) => s.transform);
-  const visible = useAtlas((s) => s.visibleLayers);
-  const highlight = useAtlas((s) => s.highlightLayer);
+  const visible = usePgmo((s) => s.visibleLayers);
+  const highlight = usePgmo((s) => s.highlightLayer);
 
   return (
     <div
