@@ -25,11 +25,13 @@ interface PgmoState {
   lens: Lens;
   visibleLayers: Record<LayerId, boolean>;
   highlightLayer: LayerId | null;
+  hideDimmed: boolean;
   selectedNodeId: string | null;
 
   setLens: (l: Lens) => void;
   toggleLayer: (l: LayerId) => void;
   setHighlight: (l: LayerId | null) => void;
+  setHideDimmed: (v: boolean) => void;
   setSelected: (id: string | null) => void;
 
   onNodesChange: (changes: NodeChange[]) => void;
@@ -53,12 +55,14 @@ export const usePgmo = create<PgmoState>((set, get) => ({
   lens: "workflow",
   visibleLayers: Object.fromEntries(layerOrder.map((l) => [l, true])) as Record<LayerId, boolean>,
   highlightLayer: null,
+  hideDimmed: false,
   selectedNodeId: null,
 
   setLens: (lens) => set({ lens }),
   toggleLayer: (l) =>
     set((s) => ({ visibleLayers: { ...s.visibleLayers, [l]: !s.visibleLayers[l] } })),
   setHighlight: (l) => set({ highlightLayer: l }),
+  setHideDimmed: (v) => set({ hideDimmed: v }),
   setSelected: (id) => set({ selectedNodeId: id }),
 
   onNodesChange: (changes) =>
