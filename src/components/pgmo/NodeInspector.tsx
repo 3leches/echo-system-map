@@ -202,6 +202,9 @@ function AddNodeForm({ onAdd }: { onAdd: (d: PgmoNodeData) => void }) {
           kind: fd.get("kind") as NodeKind,
           layer: fd.get("layer") as LayerId,
           owner: String(fd.get("owner") || ""),
+          vendor: String(fd.get("vendor") || ""),
+          maturity: (fd.get("maturity") as Maturity) || "current",
+          description: String(fd.get("description") || ""),
           shared: fd.get("shared") === "on",
         });
         f.reset();
@@ -224,7 +227,35 @@ function AddNodeForm({ onAdd }: { onAdd: (d: PgmoNodeData) => void }) {
           ))}
         </select>
       </div>
-      <input name="owner" placeholder="Owner (optional)" className="pgmo-input" />
+      <div className="grid grid-cols-2 gap-2">
+        <input name="owner" placeholder="Owner (optional)" className="pgmo-input" />
+        <input name="vendor" placeholder="Vendor / tool (optional)" className="pgmo-input" />
+      </div>
+      <Field label="Maturity">
+        <div className="flex gap-1">
+          {(["current", "transition", "target"] as const).map((m) => (
+            <label
+              key={m}
+              className="flex-1 cursor-pointer rounded-sm border border-border px-2 py-1.5 text-center text-[11px] capitalize text-muted-foreground transition-colors hover:text-foreground has-[:checked]:border-primary has-[:checked]:bg-primary/5 has-[:checked]:text-primary"
+            >
+              <input
+                type="radio"
+                name="maturity"
+                value={m}
+                defaultChecked={m === "current"}
+                className="sr-only"
+              />
+              {m}
+            </label>
+          ))}
+        </div>
+      </Field>
+      <textarea
+        name="description"
+        placeholder="Description (optional)"
+        rows={3}
+        className="pgmo-input resize-none"
+      />
       <label className="flex items-center gap-2 text-[12px]">
         <input type="checkbox" name="shared" />
         Enterprise / shared
