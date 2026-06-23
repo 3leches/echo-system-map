@@ -1,12 +1,12 @@
 import type { Edge, Node } from "reactflow";
-import type { AtlasNodeData, AtlasEdgeData, Initiative, LayerId } from "./types";
+import type { PgmoNodeData, PgmoEdgeData, Initiative, LayerId } from "./types";
 
 // Each layer occupies a horizontal swimlane. Y positions are computed
 // from LAYERS order at render time, so seeds just need a layer.
 type SeedNode = {
   id: string;
   x: number; // x position within swimlane
-  data: AtlasNodeData;
+  data: PgmoNodeData;
 };
 
 export const SEED_NODES: SeedNode[] = [
@@ -48,7 +48,7 @@ export const SEED_NODES: SeedNode[] = [
   { id: "n_iam",       x: 800, data: { label: "Identity & Access", kind: "system", layer: "enterprise", vendor: "Okta", owner: "IT", shared: true } },
 ];
 
-export const SEED_EDGES: Array<{ id: string; source: string; target: string; data: AtlasEdgeData; label?: string }> = [
+export const SEED_EDGES: Array<{ id: string; source: string; target: string; data: PgmoEdgeData; label?: string }> = [
   // Workflow chain
   { id: "e1", source: "n_research", target: "n_pms",       data: { kind: "workflow" }, label: "ideation" },
   { id: "e2", source: "n_pms",      target: "n_orderdesk", data: { kind: "workflow" }, label: "order" },
@@ -180,18 +180,18 @@ export function buildInitialFlow(
   layerOrder: LayerId[],
   laneHeight: number,
   laneTop: number,
-): { nodes: Node<AtlasNodeData>[]; edges: Edge<AtlasEdgeData>[] } {
+): { nodes: Node<PgmoNodeData>[]; edges: Edge<PgmoEdgeData>[] } {
   const yFor = (layer: LayerId) => {
     const idx = layerOrder.indexOf(layer);
     return laneTop + idx * laneHeight + 36;
   };
-  const nodes: Node<AtlasNodeData>[] = SEED_NODES.map((n) => ({
+  const nodes: Node<PgmoNodeData>[] = SEED_NODES.map((n) => ({
     id: n.id,
-    type: "atlas",
+    type: "pgmo",
     position: { x: 240 + n.x, y: yFor(n.data.layer) },
     data: n.data,
   }));
-  const edges: Edge<AtlasEdgeData>[] = SEED_EDGES.map((e) => ({
+  const edges: Edge<PgmoEdgeData>[] = SEED_EDGES.map((e) => ({
     id: e.id,
     source: e.source,
     target: e.target,

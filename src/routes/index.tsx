@@ -1,15 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Link } from "@tanstack/react-router";
-import { AppShell } from "@/components/atlas/AppShell";
-import { LAYERS, STATUS_META } from "@/lib/atlas/types";
-import { useAtlas } from "@/lib/atlas/store";
+import { AppShell } from "@/components/pgmo/AppShell";
+import { LAYERS, STATUS_META } from "@/lib/pgmo/types";
+import { usePgmo } from "@/lib/pgmo/store";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Atlas — Enterprise Architecture Studio" },
+      { title: "PgMO — Enterprise Architecture Studio" },
       { name: "description", content: "Vision, current landscape, initiatives and target operating model in one connected view." },
-      { property: "og:title", content: "Atlas — Enterprise Architecture Studio" },
+      { property: "og:title", content: "PgMO — Enterprise Architecture Studio" },
       { property: "og:description", content: "Vision, current landscape, initiatives and target operating model in one connected view." },
     ],
   }),
@@ -17,8 +17,8 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
-  const nodes = useAtlas((s) => s.nodes);
-  const initiatives = useAtlas((s) => s.initiatives);
+  const nodes = usePgmo((s) => s.nodes);
+  const initiatives = usePgmo((s) => s.initiatives);
   const shared = nodes.filter((n) => n.data.shared).length;
   const byStatus = initiatives.reduce<Record<string, number>>((acc, i) => {
     acc[i.status] = (acc[i.status] ?? 0) + 1;
@@ -36,7 +36,7 @@ function Index() {
             See how it actually runs.
           </h1>
           <p className="mt-6 max-w-xl text-[15px] leading-relaxed text-muted-foreground">
-            Atlas maps the workflows, data and systems that move a business — layer by layer,
+            PgMO maps the workflows, data and systems that move a business — layer by layer,
             desk by desk. Trace what exists today, mark the shared enterprise platforms,
             and align every initiative on the roadmap to the target operating model.
           </p>

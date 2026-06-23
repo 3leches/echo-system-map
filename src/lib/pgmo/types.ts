@@ -14,7 +14,7 @@ export type NodeKind = "workflow" | "data" | "system";
 
 export type Maturity = "current" | "transition" | "target";
 
-export interface AtlasNodeData {
+export interface PgmoNodeData {
   label: string;
   kind: NodeKind;
   layer: LayerId;
@@ -26,7 +26,7 @@ export interface AtlasNodeData {
   vendor?: string;
 }
 
-export interface AtlasEdgeData {
+export interface PgmoEdgeData {
   kind: NodeKind; // workflow step, data flow, or system integration
   label?: string;
 }

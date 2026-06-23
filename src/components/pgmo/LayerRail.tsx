@@ -1,11 +1,11 @@
-import { LAYERS, type LayerId } from "@/lib/atlas/types";
-import { useAtlas } from "@/lib/atlas/store";
+import { LAYERS, type LayerId } from "@/lib/pgmo/types";
+import { usePgmo } from "@/lib/pgmo/store";
 
 export function LayerRail() {
-  const visible = useAtlas((s) => s.visibleLayers);
-  const highlight = useAtlas((s) => s.highlightLayer);
-  const toggleLayer = useAtlas((s) => s.toggleLayer);
-  const setHighlight = useAtlas((s) => s.setHighlight);
+  const visible = usePgmo((s) => s.visibleLayers);
+  const highlight = usePgmo((s) => s.highlightLayer);
+  const toggleLayer = usePgmo((s) => s.toggleLayer);
+  const setHighlight = usePgmo((s) => s.setHighlight);
 
   return (
     <aside className="flex h-full w-[240px] shrink-0 flex-col border-r border-border bg-paper">
