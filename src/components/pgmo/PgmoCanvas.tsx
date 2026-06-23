@@ -15,7 +15,7 @@ import { PgmoNode } from "./PgmoNode";
 import { LayerRail } from "./LayerRail";
 import { NodeInspector } from "./NodeInspector";
 import { usePgmo } from "@/lib/pgmo/store";
-import { MATURITY_META, type PgmoEdgeData, type Lens, type Maturity } from "@/lib/pgmo/types";
+import { type PgmoEdgeData, type Lens } from "@/lib/pgmo/types";
 
 const nodeTypes: NodeTypes = { pgmo: PgmoNode };
 
@@ -134,72 +134,6 @@ function Inner() {
           })}
         </div>
 
-        {/* Legend */}
-        <div className="absolute right-6 top-6 z-20 rounded-sm border border-border bg-paper/95 px-4 py-3 text-[11px] shadow-sm">
-          <div className="eyebrow mb-1.5">Legend</div>
-          <div className="grid grid-cols-2 gap-x-4 gap-y-1">
-            <Legend glyph="◆" label="Workflow" />
-            <Legend glyph="▣" label="Data" />
-            <Legend glyph="●" label="System" />
-            <Legend glyph="—" label="Edge = flow" />
-          </div>
-          <div className="mt-2 flex items-center gap-1.5 border-t border-border pt-2">
-            <span className="h-2 w-2 rounded-sm bg-accent" />
-            <span className="text-foreground">Enterprise / shared resource</span>
-          </div>
-
-          {/* Dim / Hide toggle */}
-          <div className="mt-3 flex items-center gap-1 rounded-sm border border-border bg-paper px-1 py-1 shadow-sm">
-            <button
-              type="button"
-              onClick={() => setHideDimmed(false)}
-              className={
-                "rounded-sm px-2.5 py-1 text-[11px] font-medium transition-colors " +
-                (!hideDimmed ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground")
-              }
-            >
-              Dim
-            </button>
-            <button
-              type="button"
-              onClick={() => setHideDimmed(true)}
-              className={
-                "rounded-sm px-2.5 py-1 text-[11px] font-medium transition-colors " +
-                (hideDimmed ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground")
-              }
-            >
-              Hide
-            </button>
-          </div>
-
-          {/* Maturity filter */}
-          <div className="mt-3">
-            <div className="eyebrow mb-1.5">Maturity</div>
-            <div className="flex flex-wrap gap-1">
-              {([null, "current", "transition", "target"] as (Maturity | null)[]).map((m) => {
-                const active = maturityFilter === m;
-                const label = m ? MATURITY_META[m].label : "All";
-                const tone = m ? MATURITY_META[m].tone : undefined;
-                return (
-                  <button
-                    key={label}
-                    type="button"
-                    onClick={() => setMaturityFilter(m)}
-                    className={
-                      "flex items-center gap-1 rounded-sm border px-2 py-1 text-[11px] font-medium transition-colors " +
-                      (active
-                        ? "border-primary bg-primary/5 text-primary"
-                        : "border-border text-muted-foreground hover:text-foreground")
-                    }
-                  >
-                    {tone && <span className="h-2 w-2 rounded-full" style={{ backgroundColor: tone }} />}
-                    {label}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        </div>
 
         <ReactFlow
           nodes={filteredNodes}
@@ -230,15 +164,6 @@ function Inner() {
         </ReactFlow>
       </div>
       <NodeInspector />
-    </div>
-  );
-}
-
-function Legend({ glyph, label }: { glyph: string; label: string }) {
-  return (
-    <div className="flex items-center gap-1.5 text-foreground">
-      <span className="font-display text-primary">{glyph}</span>
-      <span>{label}</span>
     </div>
   );
 }
