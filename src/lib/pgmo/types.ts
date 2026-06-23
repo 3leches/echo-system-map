@@ -14,6 +14,17 @@ export type NodeKind = "workflow" | "data" | "system";
 
 export type Maturity = "current" | "transition" | "target";
 
+export type Automation = "manual" | "automated";
+export type Execution = "deterministic" | "ai_enhanced";
+
+export interface WorkflowStep {
+  id: string;
+  label: string;
+  automation: Automation;
+  execution: Execution;
+  description?: string;
+}
+
 export interface PgmoNodeData {
   label: string;
   kind: NodeKind;
@@ -24,6 +35,10 @@ export interface PgmoNodeData {
   maturity?: Maturity;
   initiativeIds?: string[];
   vendor?: string;
+  // Workflow-only: defaults used when there are no steps, and for the node-level badge
+  automation?: Automation;
+  execution?: Execution;
+  steps?: WorkflowStep[];
 }
 
 export interface PgmoEdgeData {
@@ -89,6 +104,16 @@ export const MATURITY_META: Record<Maturity, { label: string; tone: string }> = 
   current:    { label: "Current",    tone: "oklch(0.45 0.08 145)" },
   transition: { label: "Transition", tone: "oklch(0.68 0.14 75)" },
   target:     { label: "Target",     tone: "oklch(0.60 0.10 240)" },
+};
+
+export const AUTOMATION_META: Record<Automation, { label: string; short: string; tone: string }> = {
+  manual:    { label: "Manual",    short: "M", tone: "oklch(0.65 0.02 80)" },
+  automated: { label: "Automated", short: "A", tone: "oklch(0.55 0.12 165)" },
+};
+
+export const EXECUTION_META: Record<Execution, { label: string; short: string; tone: string }> = {
+  deterministic: { label: "Deterministic", short: "D",  tone: "oklch(0.55 0.08 230)" },
+  ai_enhanced:   { label: "AI-enhanced",   short: "AI", tone: "oklch(0.58 0.16 295)" },
 };
 
 export const STATUS_META: Record<InitiativeStatus, { label: string; tone: string }> = {
