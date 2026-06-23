@@ -39,6 +39,9 @@ function Inner() {
   const lens = usePgmo((s) => s.lens);
   const setLens = usePgmo((s) => s.setLens);
   const visibleLayers = usePgmo((s) => s.visibleLayers);
+  const highlightLayer = usePgmo((s) => s.highlightLayer);
+  const hideDimmed = usePgmo((s) => s.hideDimmed);
+  const setHideDimmed = usePgmo((s) => s.setHideDimmed);
   const setSelected = usePgmo((s) => s.setSelected);
   const onNodesChange = usePgmo((s) => s.onNodesChange);
   const onEdgesChange = usePgmo((s) => s.onEdgesChange);
@@ -68,10 +71,22 @@ function Inner() {
     });
   }, [edges, lens]);
 
-  const filteredNodes = useMemo(
-    () => nodes.filter((n) => visibleLayers[n.data.layer]),
-    [nodes, visibleLayers],
+  const isDimmed = useCallback(
+    (n: typeof nodes[number]) => {
+      return (
+        (lens !== n.data.kind && !(lens === "system" && n.data.shared)) ||
+        (highlightLayer !== null && highlightLayer !== n.data.layer)
+      );
+    },
+    [lens, highlightLayer],
   );
+
+  const filteredNodes = useMemo(() => {
+    return nodes
+      .filter((n) => visibleLayers[n.data.layer])
+      .filter((n) => !hideDimmed || !isDimmed(n));
+  }, [nodes, visibleLayers, hideDimmed, isDimmed]);
+
   const filteredEdges = useMemo(() => {
     const ids = new Set(filteredNodes.map((n) => n.id));
     return styledEdges.filter((e) => ids.has(e.source) && ids.has(e.target));
@@ -114,6 +129,30 @@ function Inner() {
               </button>
             );
           })}
+        </div>
+
+        {/* Dim / Hide toggle */}
+        <div className="absolute left-6 top-[88px] z-20 flex items-center gap-1 rounded-sm border border-border bg-paper px-1 py-1 shadow-sm">
+          <button
+            type="button"
+            onClick={() => setHideDimmed(false)}
+            className={
+              "rounded-sm px-2.5 py-1 text-[11px] font-medium transition-colors " +
+              (!hideDimmed ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground")
+            }
+          >
+            Dim
+          </button>
+          <button
+            type="button"
+            onClick={() => setHideDimmed(true)}
+            className={
+              "rounded-sm px-2.5 py-1 text-[11px] font-medium transition-colors " +
+              (hideDimmed ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground")
+            }
+          >
+            Hide
+          </button>
         </div>
 
         {/* Legend */}
