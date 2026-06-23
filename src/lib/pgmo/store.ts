@@ -8,7 +8,7 @@ import {
   type EdgeChange,
   type Connection,
 } from "reactflow";
-import type { PgmoEdgeData, PgmoNodeData, Initiative, LayerId, Lens } from "./types";
+import type { PgmoEdgeData, PgmoNodeData, Initiative, LayerId, Lens, Maturity } from "./types";
 import { LAYERS } from "./types";
 import { buildInitialFlow, SEED_INITIATIVES } from "./seed";
 
