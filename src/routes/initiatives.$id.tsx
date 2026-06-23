@@ -1,13 +1,13 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { AppShell } from "@/components/atlas/AppShell";
-import { useAtlas } from "@/lib/atlas/store";
-import { LAYERS, STATUS_META, type Initiative, type LayerId } from "@/lib/atlas/types";
+import { AppShell } from "@/components/pgmo/AppShell";
+import { usePgmo } from "@/lib/pgmo/store";
+import { LAYERS, STATUS_META, type Initiative, type LayerId } from "@/lib/pgmo/types";
 import { useMemo, useState } from "react";
 
 export const Route = createFileRoute("/initiatives/$id")({
   head: () => ({
     meta: [
-      { title: "Initiative — Atlas" },
+      { title: "Initiative — PgMO" },
       { name: "description", content: "Standard initiative template: vision, problem, layers, linked nodes, milestones, dependencies, KPIs, current and target state." },
     ],
   }),
@@ -16,11 +16,11 @@ export const Route = createFileRoute("/initiatives/$id")({
 
 function InitiativeDetail() {
   const { id } = Route.useParams();
-  const initiative = useAtlas((s) => s.initiatives.find((x) => x.id === id));
-  const allInitiatives = useAtlas((s) => s.initiatives);
-  const upsert = useAtlas((s) => s.upsertInitiative);
-  const remove = useAtlas((s) => s.deleteInitiative);
-  const nodes = useAtlas((s) => s.nodes);
+  const initiative = usePgmo((s) => s.initiatives.find((x) => x.id === id));
+  const allInitiatives = usePgmo((s) => s.initiatives);
+  const upsert = usePgmo((s) => s.upsertInitiative);
+  const remove = usePgmo((s) => s.deleteInitiative);
+  const nodes = usePgmo((s) => s.nodes);
   const navigate = useNavigate();
   const [draft, setDraft] = useState<Initiative | null>(initiative ?? null);
 
@@ -95,7 +95,7 @@ function InitiativeDetail() {
               onChange={(e) => set("vision", e.target.value)}
               onBlur={save}
               placeholder="A single sentence describing the future state this initiative serves."
-              className="atlas-input font-display text-xl leading-snug"
+              className="pgmo-input font-display text-xl leading-snug"
             />
           </Section>
 
@@ -106,7 +106,7 @@ function InitiativeDetail() {
               onChange={(e) => set("problem", e.target.value)}
               onBlur={save}
               placeholder="What's broken today. Who feels it."
-              className="atlas-input"
+              className="pgmo-input"
             />
           </Section>
 
@@ -117,7 +117,7 @@ function InitiativeDetail() {
                 value={draft.currentState}
                 onChange={(e) => set("currentState", e.target.value)}
                 onBlur={save}
-                className="atlas-input"
+                className="pgmo-input"
               />
             </Section>
             <Section eyebrow="04 Target state">
@@ -126,7 +126,7 @@ function InitiativeDetail() {
                 value={draft.targetState}
                 onChange={(e) => set("targetState", e.target.value)}
                 onBlur={save}
-                className="atlas-input"
+                className="pgmo-input"
               />
             </Section>
           </div>
@@ -153,7 +153,7 @@ function InitiativeDetail() {
                       set("milestones", next);
                     }}
                     onBlur={save}
-                    className="atlas-input flex-1"
+                    className="pgmo-input flex-1"
                   />
                   <input
                     type="date"
@@ -164,7 +164,7 @@ function InitiativeDetail() {
                       set("milestones", next);
                       save();
                     }}
-                    className="atlas-input w-44"
+                    className="pgmo-input w-44"
                   />
                   <button
                     onClick={() => {
@@ -207,7 +207,7 @@ function InitiativeDetail() {
                       set("kpis", next);
                     }}
                     onBlur={save}
-                    className="atlas-input col-span-6"
+                    className="pgmo-input col-span-6"
                   />
                   <input
                     placeholder="Baseline"
@@ -218,7 +218,7 @@ function InitiativeDetail() {
                       set("kpis", next);
                     }}
                     onBlur={save}
-                    className="atlas-input col-span-3"
+                    className="pgmo-input col-span-3"
                   />
                   <input
                     placeholder="Target"
@@ -229,7 +229,7 @@ function InitiativeDetail() {
                       set("kpis", next);
                     }}
                     onBlur={save}
-                    className="atlas-input col-span-2"
+                    className="pgmo-input col-span-2"
                   />
                   <button
                     onClick={() => {
@@ -268,7 +268,7 @@ function InitiativeDetail() {
                 set("status", e.target.value as Initiative["status"]);
                 save();
               }}
-              className="atlas-input"
+              className="pgmo-input"
             >
               {Object.entries(STATUS_META).map(([k, m]) => (
                 <option key={k} value={k}>
@@ -285,14 +285,14 @@ function InitiativeDetail() {
                 value={draft.startDate}
                 onChange={(e) => set("startDate", e.target.value)}
                 onBlur={save}
-                className="atlas-input"
+                className="pgmo-input"
               />
               <input
                 type="date"
                 value={draft.endDate}
                 onChange={(e) => set("endDate", e.target.value)}
                 onBlur={save}
-                className="atlas-input"
+                className="pgmo-input"
               />
             </div>
           </SidePanel>
@@ -303,14 +303,14 @@ function InitiativeDetail() {
               value={draft.owner}
               onChange={(e) => set("owner", e.target.value)}
               onBlur={save}
-              className="atlas-input mb-2"
+              className="pgmo-input mb-2"
             />
             <input
               placeholder="Sponsor"
               value={draft.sponsor ?? ""}
               onChange={(e) => set("sponsor", e.target.value)}
               onBlur={save}
-              className="atlas-input"
+              className="pgmo-input"
             />
           </SidePanel>
 
@@ -320,7 +320,7 @@ function InitiativeDetail() {
               value={draft.investment ?? ""}
               onChange={(e) => set("investment", e.target.value)}
               onBlur={save}
-              className="atlas-input"
+              className="pgmo-input"
             />
           </SidePanel>
 
@@ -377,7 +377,7 @@ function InitiativeDetail() {
                 set("linkedNodeIds", [...draft.linkedNodeIds, e.target.value]);
                 save();
               }}
-              className="atlas-input mt-2"
+              className="pgmo-input mt-2"
             >
               <option value="">+ Link a node…</option>
               {nodes
@@ -420,7 +420,7 @@ function InitiativeDetail() {
                 set("dependencies", [...draft.dependencies, e.target.value]);
                 save();
               }}
-              className="atlas-input mt-2"
+              className="pgmo-input mt-2"
             >
               <option value="">+ Add dependency…</option>
               {allInitiatives

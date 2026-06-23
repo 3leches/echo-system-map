@@ -1,16 +1,16 @@
 import { useMemo } from "react";
-import { useAtlas } from "@/lib/atlas/store";
-import { LAYERS, type AtlasNodeData, type LayerId, type NodeKind } from "@/lib/atlas/types";
+import { usePgmo } from "@/lib/pgmo/store";
+import { LAYERS, type PgmoNodeData, type LayerId, type NodeKind } from "@/lib/pgmo/types";
 import { Link } from "@tanstack/react-router";
 
 export function NodeInspector() {
-  const selectedNodeId = useAtlas((s) => s.selectedNodeId);
-  const nodes = useAtlas((s) => s.nodes);
-  const initiatives = useAtlas((s) => s.initiatives);
-  const updateNode = useAtlas((s) => s.updateNode);
-  const deleteNode = useAtlas((s) => s.deleteNode);
-  const addNode = useAtlas((s) => s.addNode);
-  const setSelected = useAtlas((s) => s.setSelected);
+  const selectedNodeId = usePgmo((s) => s.selectedNodeId);
+  const nodes = usePgmo((s) => s.nodes);
+  const initiatives = usePgmo((s) => s.initiatives);
+  const updateNode = usePgmo((s) => s.updateNode);
+  const deleteNode = usePgmo((s) => s.deleteNode);
+  const addNode = usePgmo((s) => s.addNode);
+  const setSelected = usePgmo((s) => s.setSelected);
 
   const node = useMemo(
     () => nodes.find((n) => n.id === selectedNodeId) ?? null,
@@ -41,7 +41,7 @@ export function NodeInspector() {
     );
   }
 
-  const data = node.data as AtlasNodeData;
+  const data = node.data as PgmoNodeData;
 
   return (
     <aside className="flex h-full w-[340px] shrink-0 flex-col border-l border-border bg-paper">
@@ -62,7 +62,7 @@ export function NodeInspector() {
       <div className="flex-1 space-y-5 overflow-y-auto p-5">
         <Field label="Name">
           <input
-            className="atlas-input"
+            className="pgmo-input"
             value={data.label}
             onChange={(e) => updateNode(node.id, { label: e.target.value })}
           />
@@ -70,7 +70,7 @@ export function NodeInspector() {
         <div className="grid grid-cols-2 gap-3">
           <Field label="Type">
             <select
-              className="atlas-input"
+              className="pgmo-input"
               value={data.kind}
               onChange={(e) => updateNode(node.id, { kind: e.target.value as NodeKind })}
             >
@@ -81,7 +81,7 @@ export function NodeInspector() {
           </Field>
           <Field label="Layer">
             <select
-              className="atlas-input"
+              className="pgmo-input"
               value={data.layer}
               onChange={(e) => updateNode(node.id, { layer: e.target.value as LayerId })}
             >
@@ -96,14 +96,14 @@ export function NodeInspector() {
         <div className="grid grid-cols-2 gap-3">
           <Field label="Owner">
             <input
-              className="atlas-input"
+              className="pgmo-input"
               value={data.owner ?? ""}
               onChange={(e) => updateNode(node.id, { owner: e.target.value })}
             />
           </Field>
           <Field label="Vendor / tool">
             <input
-              className="atlas-input"
+              className="pgmo-input"
               value={data.vendor ?? ""}
               onChange={(e) => updateNode(node.id, { vendor: e.target.value })}
             />
@@ -131,7 +131,7 @@ export function NodeInspector() {
         <Field label="Description">
           <textarea
             rows={3}
-            className="atlas-input resize-none"
+            className="pgmo-input resize-none"
             value={data.description ?? ""}
             onChange={(e) => updateNode(node.id, { description: e.target.value })}
           />
@@ -190,7 +190,7 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
   );
 }
 
-function AddNodeForm({ onAdd }: { onAdd: (d: AtlasNodeData) => void }) {
+function AddNodeForm({ onAdd }: { onAdd: (d: PgmoNodeData) => void }) {
   return (
     <form
       onSubmit={(e) => {
@@ -209,14 +209,14 @@ function AddNodeForm({ onAdd }: { onAdd: (d: AtlasNodeData) => void }) {
       className="space-y-3"
     >
       <div className="eyebrow">Add node</div>
-      <input name="label" placeholder="Name" className="atlas-input" required />
+      <input name="label" placeholder="Name" className="pgmo-input" required />
       <div className="grid grid-cols-2 gap-2">
-        <select name="kind" className="atlas-input" defaultValue="system">
+        <select name="kind" className="pgmo-input" defaultValue="system">
           <option value="workflow">Workflow</option>
           <option value="data">Data</option>
           <option value="system">System</option>
         </select>
-        <select name="layer" className="atlas-input" defaultValue="front_office">
+        <select name="layer" className="pgmo-input" defaultValue="front_office">
           {LAYERS.map((l) => (
             <option key={l.id} value={l.id}>
               {l.label}
@@ -224,7 +224,7 @@ function AddNodeForm({ onAdd }: { onAdd: (d: AtlasNodeData) => void }) {
           ))}
         </select>
       </div>
-      <input name="owner" placeholder="Owner (optional)" className="atlas-input" />
+      <input name="owner" placeholder="Owner (optional)" className="pgmo-input" />
       <label className="flex items-center gap-2 text-[12px]">
         <input type="checkbox" name="shared" />
         Enterprise / shared
