@@ -59,6 +59,7 @@ export const usePgmo = create<PgmoState>((set, get) => ({
   highlightLayer: null,
   hideDimmed: false,
   selectedNodeId: null,
+  maturityFilter: null,
 
   setLens: (lens) => set({ lens }),
   toggleLayer: (l) =>
@@ -66,6 +67,7 @@ export const usePgmo = create<PgmoState>((set, get) => ({
   setHighlight: (l) => set({ highlightLayer: l }),
   setHideDimmed: (v) => set({ hideDimmed: v }),
   setSelected: (id) => set({ selectedNodeId: id }),
+  setMaturityFilter: (m) => set({ maturityFilter: m }),
 
   onNodesChange: (changes) =>
     set((s) => ({ nodes: applyNodeChanges(changes, s.nodes) as Node<PgmoNodeData>[] })),
