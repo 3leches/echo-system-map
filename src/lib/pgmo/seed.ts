@@ -30,22 +30,22 @@ export const SEED_NODES: SeedNode[] = [
   { id: "n_limits",    x: 320, data: { label: "Limits Monitoring", kind: "workflow", layer: "risk", owner: "Risk", maturity: "transition" } },
 
   // Compliance
-  { id: "n_surv",      x: 80,  data: { label: "Trade Surveillance", kind: "system", layer: "compliance", vendor: "NICE Actimize", owner: "Compliance" } },
-  { id: "n_kyc",       x: 320, data: { label: "KYC / AML", kind: "workflow", layer: "compliance", owner: "Compliance" } },
+  { id: "n_surv",      x: 80,  data: { label: "Trade Surveillance", kind: "system", layer: "compliance", vendor: "NICE Actimize", owner: "Compliance", maturity: "current" } },
+  { id: "n_kyc",       x: 320, data: { label: "KYC / AML", kind: "workflow", layer: "compliance", owner: "Compliance", maturity: "current" } },
 
   // Finance
-  { id: "n_gl",        x: 80,  data: { label: "General Ledger", kind: "system", layer: "finance", vendor: "Workday", owner: "Finance" } },
-  { id: "n_treasury",  x: 320, data: { label: "Treasury & Cash", kind: "workflow", layer: "finance", owner: "Treasury" } },
+  { id: "n_gl",        x: 80,  data: { label: "General Ledger", kind: "system", layer: "finance", vendor: "Workday", owner: "Finance", maturity: "current" } },
+  { id: "n_treasury",  x: 320, data: { label: "Treasury & Cash", kind: "workflow", layer: "finance", owner: "Treasury", maturity: "current" } },
 
   // IR
   { id: "n_ir_portal", x: 80,  data: { label: "Investor Portal", kind: "system", layer: "investor_relations", owner: "IR", maturity: "transition" } },
-  { id: "n_capact",    x: 320, data: { label: "Capital Activity", kind: "workflow", layer: "investor_relations", owner: "IR" } },
+  { id: "n_capact",    x: 320, data: { label: "Capital Activity", kind: "workflow", layer: "investor_relations", owner: "IR", maturity: "current" } },
 
   // Enterprise (shared)
-  { id: "n_sec_master",x: 80,  data: { label: "Security Master", kind: "data", layer: "enterprise", owner: "Data Office", shared: true } },
-  { id: "n_party",     x: 320, data: { label: "Party / Entity Master", kind: "data", layer: "enterprise", owner: "Data Office", shared: true } },
+  { id: "n_sec_master",x: 80,  data: { label: "Security Master", kind: "data", layer: "enterprise", owner: "Data Office", shared: true, maturity: "current" } },
+  { id: "n_party",     x: 320, data: { label: "Party / Entity Master", kind: "data", layer: "enterprise", owner: "Data Office", shared: true, maturity: "current" } },
   { id: "n_dwh",       x: 560, data: { label: "Enterprise Data Platform", kind: "system", layer: "enterprise", vendor: "Snowflake", owner: "Data Office", shared: true, maturity: "transition" } },
-  { id: "n_iam",       x: 800, data: { label: "Identity & Access", kind: "system", layer: "enterprise", vendor: "Okta", owner: "IT", shared: true } },
+  { id: "n_iam",       x: 800, data: { label: "Identity & Access", kind: "system", layer: "enterprise", vendor: "Okta", owner: "IT", shared: true, maturity: "current" } },
 ];
 
 export const SEED_EDGES: Array<{ id: string; source: string; target: string; data: PgmoEdgeData; label?: string }> = [

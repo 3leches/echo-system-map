@@ -15,7 +15,7 @@ import { PgmoNode } from "./PgmoNode";
 import { LayerRail } from "./LayerRail";
 import { NodeInspector } from "./NodeInspector";
 import { usePgmo } from "@/lib/pgmo/store";
-import type { PgmoEdgeData, Lens } from "@/lib/pgmo/types";
+import { MATURITY_META, type PgmoEdgeData, type Lens, type Maturity } from "@/lib/pgmo/types";
 
 const nodeTypes: NodeTypes = { pgmo: PgmoNode };
 
@@ -42,6 +42,8 @@ function Inner() {
   const highlightLayer = usePgmo((s) => s.highlightLayer);
   const hideDimmed = usePgmo((s) => s.hideDimmed);
   const setHideDimmed = usePgmo((s) => s.setHideDimmed);
+  const maturityFilter = usePgmo((s) => s.maturityFilter);
+  const setMaturityFilter = usePgmo((s) => s.setMaturityFilter);
   const setSelected = usePgmo((s) => s.setSelected);
   const onNodesChange = usePgmo((s) => s.onNodesChange);
   const onEdgesChange = usePgmo((s) => s.onEdgesChange);
@@ -75,10 +77,11 @@ function Inner() {
     (n: typeof nodes[number]) => {
       return (
         (lens !== n.data.kind && !(lens === "system" && n.data.shared)) ||
-        (highlightLayer !== null && highlightLayer !== n.data.layer)
+        (highlightLayer !== null && highlightLayer !== n.data.layer) ||
+        (maturityFilter !== null && n.data.maturity !== maturityFilter)
       );
     },
-    [lens, highlightLayer],
+    [lens, highlightLayer, maturityFilter],
   );
 
   const filteredNodes = useMemo(() => {
@@ -167,6 +170,34 @@ function Inner() {
             >
               Hide
             </button>
+          </div>
+
+          {/* Maturity filter */}
+          <div className="mt-3">
+            <div className="eyebrow mb-1.5">Maturity</div>
+            <div className="flex flex-wrap gap-1">
+              {([null, "current", "transition", "target"] as (Maturity | null)[]).map((m) => {
+                const active = maturityFilter === m;
+                const label = m ? MATURITY_META[m].label : "All";
+                const tone = m ? MATURITY_META[m].tone : undefined;
+                return (
+                  <button
+                    key={label}
+                    type="button"
+                    onClick={() => setMaturityFilter(m)}
+                    className={
+                      "flex items-center gap-1 rounded-sm border px-2 py-1 text-[11px] font-medium transition-colors " +
+                      (active
+                        ? "border-primary bg-primary/5 text-primary"
+                        : "border-border text-muted-foreground hover:text-foreground")
+                    }
+                  >
+                    {tone && <span className="h-2 w-2 rounded-full" style={{ backgroundColor: tone }} />}
+                    {label}
+                  </button>
+                );
+              })}
+            </div>
           </div>
         </div>
 

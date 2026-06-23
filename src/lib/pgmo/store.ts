@@ -8,7 +8,7 @@ import {
   type EdgeChange,
   type Connection,
 } from "reactflow";
-import type { PgmoEdgeData, PgmoNodeData, Initiative, LayerId, Lens } from "./types";
+import type { PgmoEdgeData, PgmoNodeData, Initiative, LayerId, Lens, Maturity } from "./types";
 import { LAYERS } from "./types";
 import { buildInitialFlow, SEED_INITIATIVES } from "./seed";
 
@@ -27,12 +27,14 @@ interface PgmoState {
   highlightLayer: LayerId | null;
   hideDimmed: boolean;
   selectedNodeId: string | null;
+  maturityFilter: Maturity | null;
 
   setLens: (l: Lens) => void;
   toggleLayer: (l: LayerId) => void;
   setHighlight: (l: LayerId | null) => void;
   setHideDimmed: (v: boolean) => void;
   setSelected: (id: string | null) => void;
+  setMaturityFilter: (m: Maturity | null) => void;
 
   onNodesChange: (changes: NodeChange[]) => void;
   onEdgesChange: (changes: EdgeChange[]) => void;
@@ -57,6 +59,7 @@ export const usePgmo = create<PgmoState>((set, get) => ({
   highlightLayer: null,
   hideDimmed: false,
   selectedNodeId: null,
+  maturityFilter: null,
 
   setLens: (lens) => set({ lens }),
   toggleLayer: (l) =>
@@ -64,6 +67,7 @@ export const usePgmo = create<PgmoState>((set, get) => ({
   setHighlight: (l) => set({ highlightLayer: l }),
   setHideDimmed: (v) => set({ hideDimmed: v }),
   setSelected: (id) => set({ selectedNodeId: id }),
+  setMaturityFilter: (m) => set({ maturityFilter: m }),
 
   onNodesChange: (changes) =>
     set((s) => ({ nodes: applyNodeChanges(changes, s.nodes) as Node<PgmoNodeData>[] })),
