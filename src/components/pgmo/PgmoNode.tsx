@@ -1,6 +1,6 @@
 import { Handle, Position, type NodeProps } from "reactflow";
 import type { PgmoNodeData } from "@/lib/pgmo/types";
-import { LAYERS } from "@/lib/pgmo/types";
+import { LAYERS, MATURITY_META } from "@/lib/pgmo/types";
 import { usePgmo } from "@/lib/pgmo/store";
 
 const KIND_GLYPH: Record<PgmoNodeData["kind"], string> = {
@@ -18,12 +18,14 @@ export function PgmoNode({ id, data, selected }: NodeProps<PgmoNodeData>) {
   const layer = LAYERS.find((l) => l.id === data.layer);
   const lens = usePgmo((s) => s.lens);
   const highlight = usePgmo((s) => s.highlightLayer);
+  const maturityFilter = usePgmo((s) => s.maturityFilter);
   const initiatives = usePgmo((s) => s.initiatives);
   const linkedCount = initiatives.filter((i) => i.linkedNodeIds.includes(id)).length;
 
   const dim =
     (lens !== data.kind && !(lens === "system" && data.shared)) ||
-    (highlight && highlight !== data.layer);
+    (highlight && highlight !== data.layer) ||
+    (maturityFilter !== null && data.maturity !== maturityFilter);
 
   return (
     <div
@@ -63,6 +65,13 @@ export function PgmoNode({ id, data, selected }: NodeProps<PgmoNodeData>) {
           </span>
         )}
       </div>
+      {data.maturity && (
+        <span
+          className="absolute right-2 top-2 h-[7px] w-[7px] rounded-full"
+          style={{ backgroundColor: MATURITY_META[data.maturity].tone }}
+          title={MATURITY_META[data.maturity].label}
+        />
+      )}
       <Handle type="source" position={Position.Right} />
     </div>
   );
