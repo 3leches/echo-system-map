@@ -8,7 +8,15 @@ import {
   type EdgeChange,
   type Connection,
 } from "reactflow";
-import type { PgmoEdgeData, PgmoNodeData, Initiative, LayerId, Lens, Maturity } from "./types";
+import type {
+  PgmoEdgeData,
+  PgmoNodeData,
+  Initiative,
+  LayerId,
+  Lens,
+  Maturity,
+  WorkflowStep,
+} from "./types";
 import { LAYERS } from "./types";
 import { buildInitialFlow, SEED_INITIATIVES } from "./seed";
 
@@ -43,6 +51,10 @@ interface PgmoState {
   updateNode: (id: string, patch: Partial<PgmoNodeData>) => void;
   deleteNode: (id: string) => void;
   addNode: (data: PgmoNodeData, position?: { x: number; y: number }) => string;
+
+  addStep: (nodeId: string, step?: Partial<WorkflowStep>) => void;
+  updateStep: (nodeId: string, stepId: string, patch: Partial<WorkflowStep>) => void;
+  deleteStep: (nodeId: string, stepId: string) => void;
 
   upsertInitiative: (i: Initiative) => void;
   deleteInitiative: (id: string) => void;
@@ -101,6 +113,47 @@ export const usePgmo = create<PgmoState>((set, get) => ({
     }));
     return id;
   },
+
+  addStep: (nodeId, step) =>
+    set((s) => ({
+      nodes: s.nodes.map((n) => {
+        if (n.id !== nodeId) return n;
+        const data = n.data as PgmoNodeData;
+        const newStep: WorkflowStep = {
+          id: `s_${Math.random().toString(36).slice(2, 9)}`,
+          label: step?.label ?? "New step",
+          automation: step?.automation ?? data.automation ?? "manual",
+          execution: step?.execution ?? data.execution ?? "deterministic",
+          description: step?.description,
+        };
+        return { ...n, data: { ...data, steps: [...(data.steps ?? []), newStep] } };
+      }),
+    })),
+  updateStep: (nodeId, stepId, patch) =>
+    set((s) => ({
+      nodes: s.nodes.map((n) => {
+        if (n.id !== nodeId) return n;
+        const data = n.data as PgmoNodeData;
+        return {
+          ...n,
+          data: {
+            ...data,
+            steps: (data.steps ?? []).map((st) => (st.id === stepId ? { ...st, ...patch } : st)),
+          },
+        };
+      }),
+    })),
+  deleteStep: (nodeId, stepId) =>
+    set((s) => ({
+      nodes: s.nodes.map((n) => {
+        if (n.id !== nodeId) return n;
+        const data = n.data as PgmoNodeData;
+        return {
+          ...n,
+          data: { ...data, steps: (data.steps ?? []).filter((st) => st.id !== stepId) },
+        };
+      }),
+    })),
 
   upsertInitiative: (i) =>
     set((s) => {
