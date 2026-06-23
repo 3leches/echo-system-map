@@ -29,23 +29,24 @@ function Index() {
     <AppShell>
       <section className="grid grid-cols-12 gap-12 border-b border-border pb-16">
         <div className="col-span-12 lg:col-span-7">
-          <div className="eyebrow">An enterprise architecture studio</div>
+          <div className="eyebrow">Program Management Office</div>
           <h1 className="mt-5 font-display text-[64px] leading-[1.02] text-foreground">
-            Walk into any company.
+            The leverage to deliver
             <br />
-            See how it actually runs.
+            complex initiatives.
           </h1>
           <p className="mt-6 max-w-xl text-[15px] leading-relaxed text-muted-foreground">
-            PgMO maps the workflows, data and systems that move a business — layer by layer,
-            desk by desk. Trace what exists today, mark the shared enterprise platforms,
-            and align every initiative on the roadmap to the target operating model.
+            PgMO is the firm's operating system for program delivery. It connects
+            vision, current-state architecture, live initiatives and the target
+            operating model into one coherent view — so leadership knows what is
+            happening, why it matters, and how it composes into the future firm.
           </p>
           <div className="mt-10 flex gap-3">
             <Link
               to="/architecture"
               className="rounded-sm bg-primary px-5 py-3 text-[13px] font-medium tracking-wide text-primary-foreground hover:bg-forest-deep"
             >
-              Open the architecture canvas
+              Explore the architecture canvas
             </Link>
             <Link
               to="/initiatives"
