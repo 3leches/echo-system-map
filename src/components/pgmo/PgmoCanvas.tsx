@@ -77,10 +77,11 @@ function Inner() {
     (n: typeof nodes[number]) => {
       return (
         (lens !== n.data.kind && !(lens === "system" && n.data.shared)) ||
-        (highlightLayer !== null && highlightLayer !== n.data.layer)
+        (highlightLayer !== null && highlightLayer !== n.data.layer) ||
+        (maturityFilter !== null && n.data.maturity !== maturityFilter)
       );
     },
-    [lens, highlightLayer],
+    [lens, highlightLayer, maturityFilter],
   );
 
   const filteredNodes = useMemo(() => {
