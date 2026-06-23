@@ -42,6 +42,8 @@ function Inner() {
   const highlightLayer = usePgmo((s) => s.highlightLayer);
   const hideDimmed = usePgmo((s) => s.hideDimmed);
   const setHideDimmed = usePgmo((s) => s.setHideDimmed);
+  const maturityFilter = usePgmo((s) => s.maturityFilter);
+  const setMaturityFilter = usePgmo((s) => s.setMaturityFilter);
   const setSelected = usePgmo((s) => s.setSelected);
   const onNodesChange = usePgmo((s) => s.onNodesChange);
   const onEdgesChange = usePgmo((s) => s.onEdgesChange);
