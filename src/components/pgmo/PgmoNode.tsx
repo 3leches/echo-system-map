@@ -18,12 +18,14 @@ export function PgmoNode({ id, data, selected }: NodeProps<PgmoNodeData>) {
   const layer = LAYERS.find((l) => l.id === data.layer);
   const lens = usePgmo((s) => s.lens);
   const highlight = usePgmo((s) => s.highlightLayer);
+  const maturityFilter = usePgmo((s) => s.maturityFilter);
   const initiatives = usePgmo((s) => s.initiatives);
   const linkedCount = initiatives.filter((i) => i.linkedNodeIds.includes(id)).length;
 
   const dim =
     (lens !== data.kind && !(lens === "system" && data.shared)) ||
-    (highlight && highlight !== data.layer);
+    (highlight && highlight !== data.layer) ||
+    (maturityFilter !== null && data.maturity !== maturityFilter);
 
   return (
     <div
