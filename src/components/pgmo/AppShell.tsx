@@ -16,7 +16,7 @@ export function AppShell({ children, full = false }: { children: ReactNode; full
         <div className="mx-auto flex h-16 max-w-[1600px] items-center justify-between px-8">
           <Link to="/" className="flex items-baseline gap-3">
             <span className="font-display text-2xl tracking-[0.18em] text-primary">PgMO</span>
-            <span className="eyebrow hidden sm:inline">Enterprise Architecture Studio</span>
+            <span className="eyebrow hidden sm:inline">Enterprise Program Management Studio</span>
           </Link>
           <nav className="flex items-center gap-1">
             {NAV.map((item) => {
