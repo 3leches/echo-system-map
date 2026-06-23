@@ -34,8 +34,8 @@ export const SEED_NODES: SeedNode[] = [
   { id: "n_kyc",       x: 320, data: { label: "KYC / AML", kind: "workflow", layer: "compliance", owner: "Compliance", maturity: "current" } },
 
   // Finance
-  { id: "n_gl",        x: 80,  data: { label: "General Ledger", kind: "system", layer: "finance", vendor: "Workday", owner: "Finance" } },
-  { id: "n_treasury",  x: 320, data: { label: "Treasury & Cash", kind: "workflow", layer: "finance", owner: "Treasury" } },
+  { id: "n_gl",        x: 80,  data: { label: "General Ledger", kind: "system", layer: "finance", vendor: "Workday", owner: "Finance", maturity: "current" } },
+  { id: "n_treasury",  x: 320, data: { label: "Treasury & Cash", kind: "workflow", layer: "finance", owner: "Treasury", maturity: "current" } },
 
   // IR
   { id: "n_ir_portal", x: 80,  data: { label: "Investor Portal", kind: "system", layer: "investor_relations", owner: "IR", maturity: "transition" } },
