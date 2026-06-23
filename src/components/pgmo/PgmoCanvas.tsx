@@ -131,30 +131,6 @@ function Inner() {
           })}
         </div>
 
-        {/* Dim / Hide toggle */}
-        <div className="absolute left-6 top-[88px] z-20 flex items-center gap-1 rounded-sm border border-border bg-paper px-1 py-1 shadow-sm">
-          <button
-            type="button"
-            onClick={() => setHideDimmed(false)}
-            className={
-              "rounded-sm px-2.5 py-1 text-[11px] font-medium transition-colors " +
-              (!hideDimmed ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground")
-            }
-          >
-            Dim
-          </button>
-          <button
-            type="button"
-            onClick={() => setHideDimmed(true)}
-            className={
-              "rounded-sm px-2.5 py-1 text-[11px] font-medium transition-colors " +
-              (hideDimmed ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground")
-            }
-          >
-            Hide
-          </button>
-        </div>
-
         {/* Legend */}
         <div className="absolute right-6 top-6 z-20 rounded-sm border border-border bg-paper/95 px-4 py-3 text-[11px] shadow-sm">
           <div className="eyebrow mb-1.5">Legend</div>
@@ -167,6 +143,30 @@ function Inner() {
           <div className="mt-2 flex items-center gap-1.5 border-t border-border pt-2">
             <span className="h-2 w-2 rounded-sm bg-accent" />
             <span className="text-foreground">Enterprise / shared resource</span>
+          </div>
+
+          {/* Dim / Hide toggle */}
+          <div className="mt-3 flex items-center gap-1 rounded-sm border border-border bg-paper px-1 py-1 shadow-sm">
+            <button
+              type="button"
+              onClick={() => setHideDimmed(false)}
+              className={
+                "rounded-sm px-2.5 py-1 text-[11px] font-medium transition-colors " +
+                (!hideDimmed ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground")
+              }
+            >
+              Dim
+            </button>
+            <button
+              type="button"
+              onClick={() => setHideDimmed(true)}
+              className={
+                "rounded-sm px-2.5 py-1 text-[11px] font-medium transition-colors " +
+                (hideDimmed ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground")
+              }
+            >
+              Hide
+            </button>
           </div>
         </div>
 
