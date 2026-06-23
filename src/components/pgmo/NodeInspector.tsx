@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { usePgmo } from "@/lib/pgmo/store";
-import { LAYERS, type PgmoNodeData, type LayerId, type NodeKind } from "@/lib/pgmo/types";
+import { LAYERS, type PgmoNodeData, type LayerId, type NodeKind, type Maturity } from "@/lib/pgmo/types";
 import { Link } from "@tanstack/react-router";
 
 export function NodeInspector() {
