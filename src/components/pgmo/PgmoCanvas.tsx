@@ -15,7 +15,7 @@ import { PgmoNode } from "./PgmoNode";
 import { LayerRail } from "./LayerRail";
 import { NodeInspector } from "./NodeInspector";
 import { usePgmo } from "@/lib/pgmo/store";
-import type { PgmoEdgeData, Lens } from "@/lib/pgmo/types";
+import { MATURITY_META, type PgmoEdgeData, type Lens, type Maturity } from "@/lib/pgmo/types";
 
 const nodeTypes: NodeTypes = { pgmo: PgmoNode };
 
