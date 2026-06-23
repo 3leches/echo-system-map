@@ -9,12 +9,18 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as RoadmapRouteImport } from './routes/roadmap'
 import { Route as InitiativesRouteImport } from './routes/initiatives'
 import { Route as ArchitectureRouteImport } from './routes/architecture'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as InitiativesIdRouteImport } from './routes/initiatives.$id'
 
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RoadmapRoute = RoadmapRouteImport.update({
   id: '/roadmap',
   path: '/roadmap',
@@ -46,6 +52,7 @@ export interface FileRoutesByFullPath {
   '/architecture': typeof ArchitectureRoute
   '/initiatives': typeof InitiativesRouteWithChildren
   '/roadmap': typeof RoadmapRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/initiatives/$id': typeof InitiativesIdRoute
 }
 export interface FileRoutesByTo {
@@ -53,6 +60,7 @@ export interface FileRoutesByTo {
   '/architecture': typeof ArchitectureRoute
   '/initiatives': typeof InitiativesRouteWithChildren
   '/roadmap': typeof RoadmapRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/initiatives/$id': typeof InitiativesIdRoute
 }
 export interface FileRoutesById {
@@ -61,6 +69,7 @@ export interface FileRoutesById {
   '/architecture': typeof ArchitectureRoute
   '/initiatives': typeof InitiativesRouteWithChildren
   '/roadmap': typeof RoadmapRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/initiatives/$id': typeof InitiativesIdRoute
 }
 export interface FileRouteTypes {
@@ -70,15 +79,23 @@ export interface FileRouteTypes {
     | '/architecture'
     | '/initiatives'
     | '/roadmap'
+    | '/sitemap.xml'
     | '/initiatives/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/architecture' | '/initiatives' | '/roadmap' | '/initiatives/$id'
+  to:
+    | '/'
+    | '/architecture'
+    | '/initiatives'
+    | '/roadmap'
+    | '/sitemap.xml'
+    | '/initiatives/$id'
   id:
     | '__root__'
     | '/'
     | '/architecture'
     | '/initiatives'
     | '/roadmap'
+    | '/sitemap.xml'
     | '/initiatives/$id'
   fileRoutesById: FileRoutesById
 }
@@ -87,10 +104,18 @@ export interface RootRouteChildren {
   ArchitectureRoute: typeof ArchitectureRoute
   InitiativesRoute: typeof InitiativesRouteWithChildren
   RoadmapRoute: typeof RoadmapRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/roadmap': {
       id: '/roadmap'
       path: '/roadmap'
@@ -146,6 +171,7 @@ const rootRouteChildren: RootRouteChildren = {
   ArchitectureRoute: ArchitectureRoute,
   InitiativesRoute: InitiativesRouteWithChildren,
   RoadmapRoute: RoadmapRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
