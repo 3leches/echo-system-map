@@ -222,7 +222,7 @@ export function ResearchWorkstation({ threadId }: { threadId: string }) {
             </div>
             <div className="leading-tight">
               <div className="font-display text-[19px] text-ink">PgMO</div>
-              <div className="text-[10px] uppercase tracking-[0.15em] text-taupe">Research OS</div>
+              <div className="text-[10px] uppercase tracking-[0.15em] text-taupe">Program Management</div>
             </div>
           </div>
         </div>
@@ -234,7 +234,7 @@ export function ResearchWorkstation({ threadId }: { threadId: string }) {
             className="flex w-full items-center justify-between gap-2 rounded-sm bg-forest px-3 py-2 text-[13px] text-cream transition-colors hover:bg-forest-deep"
           >
             <span className="flex items-center gap-2">
-              <Plus className="h-3.5 w-3.5" /> New investigation
+              <Plus className="h-3.5 w-3.5" /> New program inquiry
             </span>
             <span className="font-mono text-[10px] opacity-60">⌘N</span>
           </button>
@@ -313,7 +313,7 @@ export function ResearchWorkstation({ threadId }: { threadId: string }) {
         <header className="flex items-center justify-between gap-4 border-b border-sand bg-paper/40 px-8 py-4">
           <div className="flex min-w-0 flex-1 items-center gap-3">
             <span className="hidden shrink-0 text-[10px] uppercase tracking-[0.15em] text-taupe md:inline">
-              Investigation
+              Program inquiry
             </span>
             <ChevronRight className="hidden h-3 w-3 shrink-0 text-taupe md:inline" />
             <h1 className="min-w-0 truncate font-display text-[22px] text-ink">{active.title}</h1>
@@ -373,7 +373,7 @@ export function ResearchWorkstation({ threadId }: { threadId: string }) {
                 onKeyDown={(e) => {
                   if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) handleSubmit(e);
                 }}
-                placeholder="Ask about an initiative, workflow or dependency…   (⌘↵ to send)"
+                placeholder="Ask how a program or initiative is doing, or start a new one…   (⌘↵ to send)"
                 rows={2}
                 className="w-full resize-none bg-transparent px-4 py-3 text-[14px] placeholder:text-taupe focus:outline-none"
               />

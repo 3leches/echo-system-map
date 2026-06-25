@@ -1,6 +1,6 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import {
-  Telescope,
+  Briefcase,
   Workflow as WorkflowIcon,
   Network,
   Target,
@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 
 const items: { to: string; icon: LucideIcon; label: string; match: (p: string) => boolean }[] = [
-  { to: "/research",    icon: Telescope,    label: "Research",     match: (p) => p === "/" || p.startsWith("/research") },
+  { to: "/research",    icon: Briefcase,    label: "Program Management", match: (p) => p === "/" || p.startsWith("/research") },
   { to: "/workflows",   icon: WorkflowIcon, label: "Workflows",    match: (p) => p.startsWith("/workflows") },
   { to: "/architecture",icon: Network,      label: "Architecture", match: (p) => p.startsWith("/architecture") },
   { to: "/initiatives", icon: Target,       label: "Initiatives",  match: (p) => p.startsWith("/initiatives") },
