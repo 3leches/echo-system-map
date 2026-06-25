@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { AppShell } from "@/components/pgmo/AppShell";
-import { PgmoCanvas } from "@/components/pgmo/PgmoCanvas";
+import { WorkflowsBoard } from "@/components/pgmo/WorkflowsBoard";
 
 export const Route = createFileRoute("/workflows")({
   head: () => ({
@@ -16,8 +16,8 @@ export const Route = createFileRoute("/workflows")({
 
 function WorkflowsPage() {
   return (
-    <AppShell full>
-      <PgmoCanvas lenses={["workflow"]} />
+    <AppShell>
+      <WorkflowsBoard />
     </AppShell>
   );
 }

@@ -361,7 +361,7 @@ function SegChoice<T extends string>({
   );
 }
 
-function WorkflowStepsSection({
+export function WorkflowStepsSection({
   nodeId,
   data,
   onUpdate,
