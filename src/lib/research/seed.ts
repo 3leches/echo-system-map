@@ -45,7 +45,7 @@ export const SEED_THREADS: Thread[] = [
   },
   {
     id: "t_limits",
-    title: "Should Real-time Pre-trade Limits absorb the OMS replatform scope?",
+    title: "Status check: Real-time Pre-trade Limits initiative",
     time: "2h",
     tag: "Live",
     scope: "Risk · Pre-trade Limits",
@@ -53,7 +53,7 @@ export const SEED_THREADS: Thread[] = [
   },
   {
     id: "t_ir",
-    title: "What would it take to cut manual investor reports by 90% this year?",
+    title: "How is the IR Self-Service Portal program tracking?",
     time: "Yesterday",
     tag: "Live",
     scope: "Investor Relations",
@@ -61,7 +61,7 @@ export const SEED_THREADS: Thread[] = [
   },
   {
     id: "t_kyc",
-    title: "Where does KYC Refresh Automation depend on the entity master?",
+    title: "Draft a new initiative: KYC Refresh Automation",
     time: "2d",
     tag: "Draft",
     scope: "Compliance",

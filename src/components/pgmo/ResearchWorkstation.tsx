@@ -222,7 +222,7 @@ export function ResearchWorkstation({ threadId }: { threadId: string }) {
             </div>
             <div className="leading-tight">
               <div className="font-display text-[19px] text-ink">PgMO</div>
-              <div className="text-[10px] uppercase tracking-[0.15em] text-taupe">Research OS</div>
+              <div className="text-[10px] uppercase tracking-[0.15em] text-taupe">Program Management</div>
             </div>
           </div>
         </div>
@@ -234,7 +234,7 @@ export function ResearchWorkstation({ threadId }: { threadId: string }) {
             className="flex w-full items-center justify-between gap-2 rounded-sm bg-forest px-3 py-2 text-[13px] text-cream transition-colors hover:bg-forest-deep"
           >
             <span className="flex items-center gap-2">
-              <Plus className="h-3.5 w-3.5" /> New investigation
+              <Plus className="h-3.5 w-3.5" /> New program inquiry
             </span>
             <span className="font-mono text-[10px] opacity-60">⌘N</span>
           </button>
@@ -313,7 +313,7 @@ export function ResearchWorkstation({ threadId }: { threadId: string }) {
         <header className="flex items-center justify-between gap-4 border-b border-sand bg-paper/40 px-8 py-4">
           <div className="flex min-w-0 flex-1 items-center gap-3">
             <span className="hidden shrink-0 text-[10px] uppercase tracking-[0.15em] text-taupe md:inline">
-              Investigation
+              Program inquiry
             </span>
             <ChevronRight className="hidden h-3 w-3 shrink-0 text-taupe md:inline" />
             <h1 className="min-w-0 truncate font-display text-[22px] text-ink">{active.title}</h1>
@@ -373,7 +373,7 @@ export function ResearchWorkstation({ threadId }: { threadId: string }) {
                 onKeyDown={(e) => {
                   if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) handleSubmit(e);
                 }}
-                placeholder="Ask about an initiative, workflow or dependency…   (⌘↵ to send)"
+                placeholder="Ask how a program or initiative is doing, or start a new one…   (⌘↵ to send)"
                 rows={2}
                 className="w-full resize-none bg-transparent px-4 py-3 text-[14px] placeholder:text-taupe focus:outline-none"
               />
@@ -426,20 +426,20 @@ export function ResearchWorkstation({ threadId }: { threadId: string }) {
 
 function EmptyState({ onPrompt }: { onPrompt: (p: string) => void }) {
   const examples = [
-    "Which initiatives are most at risk this quarter, and why?",
-    "Map every workflow that touches the entity master.",
-    "Where would automating two workflows free the most analyst time?",
-    "What's the critical path to the target IR reporting state?",
+    "How is the Enterprise Data Platform program tracking against plan?",
+    "Which initiatives are red or amber this quarter, and why?",
+    "Give me a status readout on the IR Self-Service Portal initiative.",
+    "Draft a new initiative to automate KYC refresh end-to-end.",
   ];
   return (
     <div className="rounded-sm border border-sand bg-paper/50 p-8">
-      <div className="text-[10px] uppercase tracking-[0.15em] text-taupe">Start an investigation</div>
+      <div className="text-[10px] uppercase tracking-[0.15em] text-taupe">Start a program inquiry</div>
       <h2 className="mt-2 font-display text-[26px] leading-tight text-ink">
-        Ask the PgMO assistant anything about your firm's programs.
+        Check on a program or initiative — or stand up a new one.
       </h2>
       <p className="mt-3 max-w-xl text-[13.5px] leading-relaxed text-taupe">
-        The orchestrator walks the initiative register, the workflow catalog and the architecture model,
-        then synthesizes a brief with citations. Toggle which capabilities it should use below.
+        The orchestrator walks the initiative register, the workflow catalog and the architecture model
+        to report status, surface risks, or draft a new initiative from the standard template.
       </p>
       <div className="mt-6 grid gap-2 sm:grid-cols-2">
         {examples.map((ex) => (
