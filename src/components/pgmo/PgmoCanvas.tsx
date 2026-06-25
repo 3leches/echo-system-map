@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import ReactFlow, {
   Background,
   Controls,
@@ -19,21 +19,28 @@ import { type PgmoEdgeData, type Lens } from "@/lib/pgmo/types";
 
 const nodeTypes: NodeTypes = { pgmo: PgmoNode };
 
-const LENS_TABS: { id: Lens; label: string; sub: string }[] = [
+const ALL_LENS_TABS: { id: Lens; label: string; sub: string }[] = [
   { id: "workflow", label: "Workflow", sub: "Process & steps" },
   { id: "data",     label: "Data",     sub: "Flows & lineage" },
   { id: "system",   label: "Systems",  sub: "Apps & integrations" },
 ];
 
-export function PgmoCanvas() {
+export interface PgmoCanvasProps {
+  /** Restrict which lenses are selectable. Defaults to all three. */
+  lenses?: Lens[];
+}
+
+export function PgmoCanvas(props: PgmoCanvasProps) {
   return (
     <ReactFlowProvider>
-      <Inner />
+      <Inner {...props} />
     </ReactFlowProvider>
   );
 }
 
-function Inner() {
+function Inner({ lenses }: PgmoCanvasProps) {
+  const allowedLenses = lenses && lenses.length > 0 ? lenses : ALL_LENS_TABS.map((t) => t.id);
+  const lensTabs = ALL_LENS_TABS.filter((t) => allowedLenses.includes(t.id));
   const nodes = usePgmo((s) => s.nodes);
   const edges = usePgmo((s) => s.edges);
   const lens = usePgmo((s) => s.lens);
@@ -48,6 +55,13 @@ function Inner() {
   const onNodesChange = usePgmo((s) => s.onNodesChange);
   const onEdgesChange = usePgmo((s) => s.onEdgesChange);
   const onConnect = usePgmo((s) => s.onConnect);
+
+  // Keep the active lens within the allowed set for this view.
+  useEffect(() => {
+    if (!allowedLenses.includes(lens)) {
+      setLens(allowedLenses[0]);
+    }
+  }, [allowedLenses, lens, setLens]);
 
   // Filter edges by current lens (with shared system nodes still showing)
   const styledEdges: Edge<PgmoEdgeData>[] = useMemo(() => {
@@ -107,8 +121,9 @@ function Inner() {
       <LayerRail />
       <div className="relative flex-1">
         {/* Lens tabs */}
+        {lensTabs.length > 1 && (
         <div className="absolute left-6 top-6 z-20 flex overflow-hidden rounded-sm border border-border bg-paper shadow-sm">
-          {LENS_TABS.map((tab) => {
+          {lensTabs.map((tab) => {
             const active = lens === tab.id;
             return (
               <button
@@ -133,6 +148,7 @@ function Inner() {
             );
           })}
         </div>
+        )}
 
 
         <ReactFlow

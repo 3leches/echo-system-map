@@ -6,9 +6,9 @@ export const Route = createFileRoute("/architecture")({
   head: () => ({
     meta: [
       { title: "Architecture Canvas — PgMO" },
-      { name: "description", content: "Workflows, data flows and system architecture, organised by enterprise layer. Switch lenses, isolate layers, edit nodes inline." },
+      { name: "description", content: "Data flows and system architecture, organised by enterprise layer. Switch lenses, isolate layers, edit nodes inline." },
       { property: "og:title", content: "Architecture Canvas — PgMO" },
-      { property: "og:description", content: "Workflows, data flows and system architecture, organised by enterprise layer." },
+      { property: "og:description", content: "Data flows and system architecture, organised by enterprise layer." },
     ],
   }),
   component: ArchitecturePage,
@@ -17,7 +17,7 @@ export const Route = createFileRoute("/architecture")({
 function ArchitecturePage() {
   return (
     <AppShell full>
-      <PgmoCanvas />
+      <PgmoCanvas lenses={["data", "system"]} />
     </AppShell>
   );
 }
