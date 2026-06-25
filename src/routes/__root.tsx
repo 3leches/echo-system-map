@@ -83,9 +83,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "PgMO — Enterprise Program Management Studio" },
+      { title: "PgMO — Studio" },
       { name: "description", content: "Map workflows, data and systems across the enterprise. Align initiatives and roadmaps to a target operating model." },
-      { property: "og:title", content: "PgMO — Enterprise Program Management Studio" },
+      { property: "og:title", content: "PgMO — Studio" },
       { property: "og:description", content: "Map workflows, data and systems across the enterprise. Align initiatives and roadmaps to a target operating model." },
       { property: "og:type", content: "website" },
 

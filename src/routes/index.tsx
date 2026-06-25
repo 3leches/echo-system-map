@@ -7,9 +7,9 @@ import { usePgmo } from "@/lib/pgmo/store";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "PgMO — Enterprise Program Management Studio" },
+      { title: "PgMO — Studio" },
       { name: "description", content: "The firm's operating system for program delivery. Connect vision, architecture, initiatives and target operating model in one coherent view." },
-      { property: "og:title", content: "PgMO — Enterprise Program Management Studio" },
+      { property: "og:title", content: "PgMO — Studio" },
       { property: "og:description", content: "The firm's operating system for program delivery. Connect vision, architecture, initiatives and target operating model in one coherent view." },
     ],
   }),
