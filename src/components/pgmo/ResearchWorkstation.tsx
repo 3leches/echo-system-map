@@ -426,20 +426,20 @@ export function ResearchWorkstation({ threadId }: { threadId: string }) {
 
 function EmptyState({ onPrompt }: { onPrompt: (p: string) => void }) {
   const examples = [
-    "Which initiatives are most at risk this quarter, and why?",
-    "Map every workflow that touches the entity master.",
-    "Where would automating two workflows free the most analyst time?",
-    "What's the critical path to the target IR reporting state?",
+    "How is the Enterprise Data Platform program tracking against plan?",
+    "Which initiatives are red or amber this quarter, and why?",
+    "Give me a status readout on the IR Self-Service Portal initiative.",
+    "Draft a new initiative to automate KYC refresh end-to-end.",
   ];
   return (
     <div className="rounded-sm border border-sand bg-paper/50 p-8">
-      <div className="text-[10px] uppercase tracking-[0.15em] text-taupe">Start an investigation</div>
+      <div className="text-[10px] uppercase tracking-[0.15em] text-taupe">Start a program inquiry</div>
       <h2 className="mt-2 font-display text-[26px] leading-tight text-ink">
-        Ask the PgMO assistant anything about your firm's programs.
+        Check on a program or initiative — or stand up a new one.
       </h2>
       <p className="mt-3 max-w-xl text-[13.5px] leading-relaxed text-taupe">
-        The orchestrator walks the initiative register, the workflow catalog and the architecture model,
-        then synthesizes a brief with citations. Toggle which capabilities it should use below.
+        The orchestrator walks the initiative register, the workflow catalog and the architecture model
+        to report status, surface risks, or draft a new initiative from the standard template.
       </p>
       <div className="mt-6 grid gap-2 sm:grid-cols-2">
         {examples.map((ex) => (
