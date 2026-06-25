@@ -12,8 +12,13 @@ type SeedNode = {
 export const SEED_NODES: SeedNode[] = [
   // Front office
   { id: "n_orderdesk", x: 80,  data: { label: "Order Management", kind: "system", layer: "front_office", vendor: "Charles River", owner: "Trading", maturity: "current" } },
-  { id: "n_research",  x: 320, data: { label: "Research Workflow", kind: "workflow", layer: "front_office", owner: "PMs", maturity: "current" } },
-  { id: "n_pms",       x: 560, data: { label: "Portfolio Mgmt", kind: "system", layer: "front_office", vendor: "Aladdin", owner: "PMs", maturity: "current" } },
+  { id: "n_pms",       x: 320, data: { label: "Portfolio Mgmt", kind: "system", layer: "front_office", vendor: "Aladdin", owner: "PMs", maturity: "current" } },
+
+  // Research
+  { id: "n_research",  x: 80,  data: { label: "Idea Generation",   kind: "workflow", layer: "research", owner: "Analysts", maturity: "current", automation: "manual",    execution: "deterministic" } },
+  { id: "n_thesis",    x: 320, data: { label: "Thesis Drafting",   kind: "workflow", layer: "research", owner: "Analysts", maturity: "transition", automation: "automated", execution: "ai_enhanced" } },
+  { id: "n_models",    x: 560, data: { label: "Valuation Models",  kind: "system",   layer: "research", vendor: "Excel + Python", owner: "Research Eng", maturity: "current" } },
+  { id: "n_expert",    x: 800, data: { label: "Expert Network Notes", kind: "data",  layer: "research", owner: "Analysts", maturity: "current" } },
 
   // Middle office
   { id: "n_ibor",      x: 80,  data: { label: "IBOR / ABOR", kind: "data", layer: "middle_office", owner: "Ops", maturity: "current" } },
