@@ -212,7 +212,7 @@ export function ResearchWorkstation({ threadId }: { threadId: string }) {
   );
 
   return (
-    <div className="flex h-[calc(100vh-0rem)] bg-cream text-ink">
+    <div className="flex h-full bg-cream text-ink">
       {/* Thread list */}
       <aside className="flex w-72 shrink-0 flex-col border-r border-sand bg-paper/60">
         <div className="border-b border-sand px-5 py-5">

@@ -117,7 +117,7 @@ function Inner({ lenses }: PgmoCanvasProps) {
   const edgeTypes: EdgeTypes = useMemo(() => ({}), []);
 
   return (
-    <div className="flex h-[calc(100vh-4rem)] w-full">
+    <div className="flex h-full w-full">
       <LayerRail />
       <div className="relative flex-1">
         {/* Lens tabs */}
