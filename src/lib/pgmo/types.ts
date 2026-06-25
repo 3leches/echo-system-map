@@ -2,6 +2,7 @@ export type LayerId =
   | "front_office"
   | "middle_office"
   | "back_office"
+  | "research"
   | "risk"
   | "compliance"
   | "finance"
@@ -91,6 +92,7 @@ export interface Initiative {
 
 export const LAYERS: { id: LayerId; label: string; hue: string; description: string }[] = [
   { id: "front_office", label: "Front Office", hue: "oklch(0.78 0.07 90)", description: "Origination, trading, client-facing" },
+  { id: "research", label: "Research", hue: "oklch(0.80 0.06 150)", description: "Investment research, models, expert networks" },
   { id: "middle_office", label: "Middle Office", hue: "oklch(0.78 0.05 130)", description: "Trade support, valuation, performance" },
   { id: "back_office", label: "Back Office", hue: "oklch(0.80 0.04 70)", description: "Settlements, custody, operations" },
   { id: "risk", label: "Risk", hue: "oklch(0.75 0.07 35)", description: "Market, credit, liquidity, operational risk" },
