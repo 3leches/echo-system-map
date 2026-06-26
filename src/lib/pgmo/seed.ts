@@ -1,5 +1,5 @@
 import type { Edge, Node } from "reactflow";
-import type { PgmoNodeData, PgmoEdgeData, Initiative, LayerId } from "./types";
+import type { PgmoNodeData, PgmoEdgeData, Initiative, LayerId, FirmWig } from "./types";
 
 // Each layer occupies a horizontal swimlane. Y positions are computed
 // from LAYERS order at render time, so seeds just need a layer.
@@ -105,6 +105,25 @@ export const SEED_INITIATIVES: Initiative[] = [
     currentState: "Three overlapping warehouses, nightly batch.",
     targetState: "Single platform, near-real-time, governed lineage.",
     investment: "$6.4M",
+    wig: {
+      statement: "Reduce time-to-investor-pack from 8 days to 1 day by Dec 20, 2026.",
+      from: "8 days", to: "1 day", deadline: "2026-12-20",
+      firmWigId: "fw_dataops",
+    },
+    leadMeasures: [
+      {
+        id: "lm_edp_1", name: "Datasets migrated to EDP", unit: "datasets", weeklyTarget: 3,
+        weeks: buildWeeks(8, 3, [2, 4, 3, 3, 5, 2, 4, 3]),
+      },
+      {
+        id: "lm_edp_2", name: "Reconciliation rules automated", unit: "rules", weeklyTarget: 5,
+        weeks: buildWeeks(8, 5, [3, 5, 4, 6, 5, 4, 6, 5]),
+      },
+    ],
+    wigSessions: [
+      { id: "ws1", weekStart: weekAgo(2), commitments: "Migrate 3 datasets; align lineage tags with IR.", results: "2 of 3 datasets migrated; lineage rollout slipped.", clearingPath: "Need infra capacity from Cloud team for the third dataset." },
+      { id: "ws2", weekStart: weekAgo(1), commitments: "Finish dataset #3; pair with IR on lineage tags.", results: "Dataset #3 done; lineage tags 80% complete.", clearingPath: "Schedule joint review with IR Friday." },
+    ],
   },
   {
     id: "i_limits",
@@ -129,6 +148,19 @@ export const SEED_INITIATIVES: Initiative[] = [
     currentState: "Manual limit sheets, T+0 review.",
     targetState: "Sub-second pre-trade check at OMS.",
     investment: "$1.8M",
+    wig: {
+      statement: "Cut post-trade limit breaches from 12/mo to 0 by Nov 30, 2026.",
+      from: "12 / mo", to: "0", deadline: "2026-11-30", firmWigId: "fw_risk",
+    },
+    leadMeasures: [
+      {
+        id: "lm_lim_1", name: "Desks on pre-trade limit service", unit: "desks", weeklyTarget: 1,
+        weeks: buildWeeks(8, 1, [0, 1, 1, 0, 1, 1, 2, 1]),
+      },
+    ],
+    wigSessions: [
+      { id: "ws1", weekStart: weekAgo(1), commitments: "Onboard equities desk to pilot.", results: "Equities live in shadow mode.", clearingPath: "OMS team to allocate integration window." },
+    ],
   },
   {
     id: "i_ir",
@@ -154,6 +186,21 @@ export const SEED_INITIATIVES: Initiative[] = [
     currentState: "Email + PDF distribution.",
     targetState: "Authenticated portal, real-time data.",
     investment: "$3.2M",
+    wig: {
+      statement: "Reduce manual IR report hours from 1,800 to under 200 per quarter by Jan 31, 2027.",
+      from: "1,800 hrs / Q", to: "< 200 hrs / Q", deadline: "2027-01-31", firmWigId: "fw_dataops",
+    },
+    leadMeasures: [
+      {
+        id: "lm_ir_1", name: "Investors migrated to portal", unit: "LPs", weeklyTarget: 6,
+        weeks: buildWeeks(8, 6, [4, 6, 5, 7, 6, 8, 5, 7]),
+      },
+      {
+        id: "lm_ir_2", name: "Report templates auto-generated", unit: "templates", weeklyTarget: 4,
+        weeks: buildWeeks(8, 4, [2, 3, 4, 4, 5, 3, 4, 4]),
+      },
+    ],
+    wigSessions: [],
   },
   {
     id: "i_kyc",
@@ -174,8 +221,56 @@ export const SEED_INITIATIVES: Initiative[] = [
     currentState: "Spreadsheets + email.",
     targetState: "Event-driven from entity master.",
     investment: "$0.9M",
+    wig: {
+      statement: "Shorten KYC refresh cycle from 45 days to 5 days by Jun 30, 2027.",
+      from: "45 days", to: "5 days", deadline: "2027-06-30",
+    },
+    leadMeasures: [],
+    wigSessions: [],
   },
 ];
+
+export const SEED_FIRM_WIGS: FirmWig[] = [
+  {
+    id: "fw_dataops",
+    statement: "Move the firm from 8-day to 1-day investor reporting by year-end.",
+    from: "8 days", to: "1 day", deadline: "2026-12-31",
+    baseline: 8, current: 5, target: 1, unit: "days", owner: "COO", trend: "down",
+  },
+  {
+    id: "fw_risk",
+    statement: "Eliminate post-trade limit breaches by Q4 2026.",
+    from: "12 / mo", to: "0", deadline: "2026-11-30",
+    baseline: 12, current: 4, target: 0, unit: "breaches/mo", owner: "CRO", trend: "down",
+  },
+  {
+    id: "fw_alpha",
+    statement: "Lift research idea throughput from 18 to 40 vetted theses per quarter.",
+    from: "18 / Q", to: "40 / Q", deadline: "2026-12-31",
+    baseline: 18, current: 27, target: 40, unit: "theses/Q", owner: "Head of Research", trend: "up",
+  },
+];
+
+/* ---- helpers used by the seed only ---- */
+
+function weekAgo(n: number): string {
+  const d = new Date();
+  const day = (d.getDay() + 6) % 7;
+  d.setDate(d.getDate() - day - n * 7);
+  return d.toISOString().slice(0, 10);
+}
+
+function buildWeeks(count: number, target: number, actuals: number[]) {
+  const weeks = [];
+  for (let i = count - 1; i >= 0; i--) {
+    weeks.push({
+      weekStart: weekAgo(i),
+      target,
+      actual: actuals[count - 1 - i] ?? 0,
+    });
+  }
+  return weeks;
+}
 
 export type SeedNodeList = typeof SEED_NODES;
 export type SeedEdgeList = typeof SEED_EDGES;
