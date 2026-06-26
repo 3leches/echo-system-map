@@ -16,9 +16,12 @@ import type {
   Lens,
   Maturity,
   WorkflowStep,
+  FirmWig,
+  LeadMeasure,
+  WigSession,
 } from "./types";
 import { LAYERS } from "./types";
-import { buildInitialFlow, SEED_INITIATIVES } from "./seed";
+import { buildInitialFlow, SEED_INITIATIVES, SEED_FIRM_WIGS } from "./seed";
 
 export const LANE_HEIGHT = 170;
 export const LANE_TOP = 24;
@@ -30,6 +33,9 @@ interface PgmoState {
   nodes: Node<PgmoNodeData>[];
   edges: Edge<PgmoEdgeData>[];
   initiatives: Initiative[];
+  firmWigs: FirmWig[];
+  /** % of capacity spent in the day-job "whirlwind" vs. WIG work (0-100) */
+  whirlwindRatio: number;
   lens: Lens;
   visibleLayers: Record<LayerId, boolean>;
   highlightLayer: LayerId | null;
@@ -60,12 +66,18 @@ interface PgmoState {
   deleteInitiative: (id: string) => void;
   linkInitiativeToNode: (initiativeId: string, nodeId: string) => void;
   unlinkInitiativeFromNode: (initiativeId: string, nodeId: string) => void;
+
+  upsertFirmWig: (w: FirmWig) => void;
+  deleteFirmWig: (id: string) => void;
+  setWhirlwindRatio: (n: number) => void;
 }
 
 export const usePgmo = create<PgmoState>((set, get) => ({
   nodes: initial.nodes,
   edges: initial.edges,
   initiatives: SEED_INITIATIVES,
+  firmWigs: SEED_FIRM_WIGS,
+  whirlwindRatio: 72,
   lens: "workflow",
   visibleLayers: Object.fromEntries(layerOrder.map((l) => [l, true])) as Record<LayerId, boolean>,
   highlightLayer: null,
@@ -182,6 +194,16 @@ export const usePgmo = create<PgmoState>((set, get) => ({
           : i,
       ),
     })),
+
+  upsertFirmWig: (w) =>
+    set((s) => {
+      const exists = s.firmWigs.find((x) => x.id === w.id);
+      return {
+        firmWigs: exists ? s.firmWigs.map((x) => (x.id === w.id ? w : x)) : [...s.firmWigs, w],
+      };
+    }),
+  deleteFirmWig: (id) => set((s) => ({ firmWigs: s.firmWigs.filter((w) => w.id !== id) })),
+  setWhirlwindRatio: (n) => set({ whirlwindRatio: Math.max(0, Math.min(100, n)) }),
 }));
 
 export function emptyInitiative(): Initiative {
@@ -208,5 +230,48 @@ export function emptyInitiative(): Initiative {
     currentState: "",
     targetState: "",
     investment: "",
+    wig: { statement: "", from: "", to: "", deadline: inSixMonths },
+    leadMeasures: [],
+    wigSessions: [],
+  };
+}
+
+export function emptyFirmWig(): FirmWig {
+  return {
+    id: `fw_${Math.random().toString(36).slice(2, 9)}`,
+    statement: "",
+    from: "",
+    to: "",
+    deadline: new Date(Date.now() + 1000 * 60 * 60 * 24 * 365).toISOString().slice(0, 10),
+    baseline: 0,
+    current: 0,
+    target: 0,
+    unit: "",
+    owner: "",
+    trend: "flat",
+  };
+}
+
+export function emptyLeadMeasure(): LeadMeasure {
+  return {
+    id: `lm_${Math.random().toString(36).slice(2, 9)}`,
+    name: "",
+    unit: "",
+    weeklyTarget: 0,
+    weeks: [],
+  };
+}
+
+export function emptyWigSession(): WigSession {
+  const d = new Date();
+  // Snap to Monday of current ISO week
+  const day = (d.getDay() + 6) % 7;
+  d.setDate(d.getDate() - day);
+  return {
+    id: `ws_${Math.random().toString(36).slice(2, 9)}`,
+    weekStart: d.toISOString().slice(0, 10),
+    commitments: "",
+    results: "",
+    clearingPath: "",
   };
 }
