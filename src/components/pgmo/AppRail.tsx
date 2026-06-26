@@ -11,6 +11,7 @@ import {
   LayoutDashboard,
   Wand2,
   Terminal,
+  BookOpen,
   type LucideIcon,
 } from "lucide-react";
 
@@ -23,6 +24,7 @@ const items: { to: string; icon: LucideIcon; label: string; match: (p: string) =
   { to: "/roadmap",     icon: Calendar,     label: "Roadmap",      match: (p) => p.startsWith("/roadmap") },
   { to: "/skills",      icon: Wand2,        label: "Skills",       match: (p) => p.startsWith("/skills") },
   { to: "/commands",    icon: Terminal,     label: "Commands",     match: (p) => p.startsWith("/commands") },
+  { to: "/glossary",    icon: BookOpen,     label: "Glossary",     match: (p) => p.startsWith("/glossary") },
 ];
 
 export function AppRail() {
