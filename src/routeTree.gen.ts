@@ -15,7 +15,6 @@ import { Route as RoadmapRouteImport } from './routes/roadmap'
 import { Route as ResearchRouteImport } from './routes/research'
 import { Route as InitiativesRouteImport } from './routes/initiatives'
 import { Route as ArchitectureRouteImport } from './routes/architecture'
-import { Route as IndexRouteImport } from './routes/index'
 import { Route as ResearchIndexRouteImport } from './routes/research.index'
 import { Route as ResearchThreadIdRouteImport } from './routes/research.$threadId'
 import { Route as InitiativesIdRouteImport } from './routes/initiatives.$id'
@@ -50,11 +49,6 @@ const ArchitectureRoute = ArchitectureRouteImport.update({
   path: '/architecture',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ResearchIndexRoute = ResearchIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -72,7 +66,6 @@ const InitiativesIdRoute = InitiativesIdRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
   '/architecture': typeof ArchitectureRoute
   '/initiatives': typeof InitiativesRouteWithChildren
   '/research': typeof ResearchRouteWithChildren
@@ -84,7 +77,6 @@ export interface FileRoutesByFullPath {
   '/research/': typeof ResearchIndexRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
   '/architecture': typeof ArchitectureRoute
   '/initiatives': typeof InitiativesRouteWithChildren
   '/roadmap': typeof RoadmapRoute
@@ -96,7 +88,6 @@ export interface FileRoutesByTo {
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
   '/architecture': typeof ArchitectureRoute
   '/initiatives': typeof InitiativesRouteWithChildren
   '/research': typeof ResearchRouteWithChildren
@@ -110,7 +101,6 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | '/'
     | '/architecture'
     | '/initiatives'
     | '/research'
@@ -122,7 +112,6 @@ export interface FileRouteTypes {
     | '/research/'
   fileRoutesByTo: FileRoutesByTo
   to:
-    | '/'
     | '/architecture'
     | '/initiatives'
     | '/roadmap'
@@ -133,7 +122,6 @@ export interface FileRouteTypes {
     | '/research'
   id:
     | '__root__'
-    | '/'
     | '/architecture'
     | '/initiatives'
     | '/research'
@@ -146,7 +134,6 @@ export interface FileRouteTypes {
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
   ArchitectureRoute: typeof ArchitectureRoute
   InitiativesRoute: typeof InitiativesRouteWithChildren
   ResearchRoute: typeof ResearchRouteWithChildren
@@ -197,13 +184,6 @@ declare module '@tanstack/react-router' {
       path: '/architecture'
       fullPath: '/architecture'
       preLoaderRoute: typeof ArchitectureRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/research/': {
@@ -257,7 +237,6 @@ const ResearchRouteWithChildren = ResearchRoute._addFileChildren(
 )
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
   ArchitectureRoute: ArchitectureRoute,
   InitiativesRoute: InitiativesRouteWithChildren,
   ResearchRoute: ResearchRouteWithChildren,
