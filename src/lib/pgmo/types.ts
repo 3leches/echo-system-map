@@ -69,6 +69,59 @@ export interface KPI {
   target: string;
 }
 
+/* ============================================================
+ * 4 Disciplines of Execution (4DX) primitives
+ * ============================================================ */
+
+/** Wildly Important Goal — "From X to Y by When" */
+export interface WIG {
+  statement: string;
+  from: string;
+  to: string;
+  deadline: string; // YYYY-MM-DD
+  firmWigId?: string; // initiative WIG → firm WIG link
+}
+
+/** Weekly target/actual for a single lead measure */
+export interface LeadMeasureWeek {
+  weekStart: string; // YYYY-MM-DD (Monday)
+  target: number;
+  actual: number;
+}
+
+/** Lead measure — predictive + influenceable activity */
+export interface LeadMeasure {
+  id: string;
+  name: string;
+  unit?: string;
+  weeklyTarget: number;
+  weeks: LeadMeasureWeek[];
+}
+
+/** Weekly WIG session log entry */
+export interface WigSession {
+  id: string;
+  weekStart: string;
+  commitments: string;
+  results: string;
+  clearingPath: string;
+}
+
+/** Firm-level WIG with current lag-measure tracking */
+export interface FirmWig {
+  id: string;
+  statement: string;
+  from: string;
+  to: string;
+  deadline: string;
+  baseline: number;
+  current: number;
+  target: number;
+  unit?: string;
+  owner?: string;
+  trend?: "up" | "down" | "flat";
+}
+
 /** Standard initiative template — roadmap is computed from these */
 export interface Initiative {
   id: string;
@@ -88,6 +141,12 @@ export interface Initiative {
   currentState: string;
   targetState: string;
   investment?: string;
+  /** 4DX — Wildly Important Goal for this initiative */
+  wig?: WIG;
+  /** 4DX — Lead measures driving the WIG */
+  leadMeasures?: LeadMeasure[];
+  /** 4DX — Weekly WIG session log */
+  wigSessions?: WigSession[];
 }
 
 export const LAYERS: { id: LayerId; label: string; hue: string; description: string }[] = [
