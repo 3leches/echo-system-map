@@ -12,6 +12,12 @@ import {
   Workflow as WorkflowIcon,
   ArrowUpRight,
   CircleDot,
+  Trophy,
+  ArrowDown,
+  ArrowUp,
+  Minus,
+  Wind,
+  Flame,
   type LucideIcon,
 } from "lucide-react";
 import { usePgmo } from "@/lib/pgmo/store";
@@ -20,7 +26,7 @@ import {
   STATUS_META,
   type Initiative,
   type InitiativeStatus,
-  type LayerId,
+  type FirmWig,
 } from "@/lib/pgmo/types";
 
 function parseInvestment(s?: string): number {
@@ -46,6 +52,9 @@ function daysUntil(s: string): number {
 export function Dashboard() {
   const initiatives = usePgmo((s) => s.initiatives);
   const nodes = usePgmo((s) => s.nodes);
+  const firmWigs = usePgmo((s) => s.firmWigs);
+  const whirlwindRatio = usePgmo((s) => s.whirlwindRatio);
+  const setWhirlwindRatio = usePgmo((s) => s.setWhirlwindRatio);
 
   const stats = useMemo(() => {
     const byStatus = initiatives.reduce<Record<InitiativeStatus, number>>(
@@ -140,6 +149,27 @@ export function Dashboard() {
           hint="Across all initiatives"
           tone="ink"
         />
+      </section>
+
+      {/* 4DX Scoreboard */}
+      <section>
+        <div className="mb-3 flex items-end justify-between">
+          <div>
+            <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] text-taupe">
+              <Trophy className="h-3 w-3 text-forest" /> Scoreboard · 4DX
+            </div>
+            <h2 className="mt-1 font-display text-[22px] text-ink">Are we winning?</h2>
+          </div>
+          <div className="text-[11px] text-taupe">
+            A compact players&apos; scoreboard for every firm-level WIG.
+          </div>
+        </div>
+        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+          {firmWigs.map((w) => (
+            <ScoreboardCard key={w.id} w={w} />
+          ))}
+          <WhirlwindCard ratio={whirlwindRatio} onChange={setWhirlwindRatio} />
+        </div>
       </section>
 
       {/* Two-column body */}
@@ -282,6 +312,137 @@ export function Dashboard() {
           <Stat label="Data assets" value={String(nodes.filter((n) => n.data.kind === "data").length)} />
         </div>
       </section>
+    </div>
+  );
+}
+
+/* ============================ 4DX ============================ */
+
+function ScoreboardCard({ w }: { w: FirmWig }) {
+  // direction = "down" means lower is better (e.g. breaches, days)
+  const lowerIsBetter = w.target < w.baseline;
+  const span = Math.abs(w.target - w.baseline) || 1;
+  const progressed = lowerIsBetter ? w.baseline - w.current : w.current - w.baseline;
+  const pct = Math.max(0, Math.min(100, (progressed / span) * 100));
+  const winning = pct >= 60;
+  const onPace = pct >= 30 && pct < 60;
+  const tone = winning ? "text-forest" : onPace ? "text-amber-700" : "text-red-600";
+  const trendIcon =
+    w.trend === "up" ? ArrowUp : w.trend === "down" ? ArrowDown : Minus;
+  const TrendIcon = trendIcon;
+
+  return (
+    <div className="relative overflow-hidden rounded-sm border border-sand bg-paper/60 p-4">
+      <div className="flex items-start justify-between gap-3">
+        <div className="text-[10px] uppercase tracking-[0.18em] text-taupe">Firm WIG</div>
+        <span
+          className={
+            "rounded-sm px-1.5 py-0.5 text-[9.5px] uppercase tracking-wider " +
+            (winning
+              ? "bg-forest/10 text-forest"
+              : onPace
+              ? "bg-amber-100 text-amber-800"
+              : "bg-red-100 text-red-700")
+          }
+        >
+          {winning ? "Winning" : onPace ? "On pace" : "Behind"}
+        </span>
+      </div>
+      <div className="mt-1.5 line-clamp-2 text-[13px] leading-snug text-ink">{w.statement}</div>
+
+      <div className="mt-3 flex items-end justify-between gap-3">
+        <div>
+          <div className="text-[10px] uppercase tracking-wider text-taupe">Current</div>
+          <div className={`font-display text-[34px] leading-none ${tone}`}>
+            {w.current}
+            {w.unit && <span className="ml-1 text-[12px] text-taupe">{w.unit}</span>}
+          </div>
+        </div>
+        <div className="text-right">
+          <div className="text-[10px] uppercase tracking-wider text-taupe">Target</div>
+          <div className="font-display text-[18px] text-ink">{w.target}</div>
+          <div className="mt-0.5 flex items-center justify-end gap-1 text-[10px] text-taupe">
+            <TrendIcon className="h-3 w-3" /> from {w.baseline}
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-3">
+        <div className="h-1.5 overflow-hidden rounded-full bg-sand/60">
+          <div
+            className="h-full rounded-full"
+            style={{
+              width: `${pct}%`,
+              background: winning ? "var(--forest)" : onPace ? "#b45309" : "#dc2626",
+            }}
+          />
+        </div>
+        <div className="mt-1 flex justify-between text-[10px] text-taupe">
+          <span>{Math.round(pct)}% to goal</span>
+          <span>by {new Date(w.deadline).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })}</span>
+        </div>
+      </div>
+
+      {w.owner && (
+        <div className="mt-2 text-[10.5px] text-taupe">Owner · {w.owner}</div>
+      )}
+    </div>
+  );
+}
+
+function WhirlwindCard({ ratio, onChange }: { ratio: number; onChange: (n: number) => void }) {
+  const wig = 100 - ratio;
+  const healthy = wig >= 20;
+  return (
+    <div className="rounded-sm border border-sand bg-paper/60 p-4">
+      <div className="flex items-start justify-between gap-3">
+        <div className="text-[10px] uppercase tracking-[0.18em] text-taupe">Whirlwind ratio</div>
+        <span
+          className={
+            "rounded-sm px-1.5 py-0.5 text-[9.5px] uppercase tracking-wider " +
+            (healthy ? "bg-forest/10 text-forest" : "bg-red-100 text-red-700")
+          }
+        >
+          {healthy ? "Protected" : "WIG starved"}
+        </span>
+      </div>
+      <div className="mt-1.5 text-[12px] leading-snug text-taupe">
+        Share of firm capacity spent on the day-job versus the WIGs.
+      </div>
+
+      <div className="mt-3 flex items-end gap-3">
+        <div className="flex items-center gap-1.5">
+          <Wind className="h-4 w-4 text-amber-700" />
+          <div>
+            <div className="font-display text-[28px] leading-none text-ink">{ratio}%</div>
+            <div className="text-[10px] uppercase tracking-wider text-taupe">Whirlwind</div>
+          </div>
+        </div>
+        <div className="ml-auto flex items-center gap-1.5">
+          <Flame className="h-4 w-4 text-forest" />
+          <div className="text-right">
+            <div className="font-display text-[28px] leading-none text-forest">{wig}%</div>
+            <div className="text-[10px] uppercase tracking-wider text-taupe">WIG</div>
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-3 flex h-2 w-full overflow-hidden rounded-full border border-sand">
+        <div style={{ width: `${ratio}%`, background: "#b45309" }} />
+        <div style={{ width: `${wig}%`, background: "var(--forest)" }} />
+      </div>
+      <input
+        type="range"
+        min={0}
+        max={100}
+        value={ratio}
+        onChange={(e) => onChange(Number(e.target.value))}
+        className="mt-3 w-full accent-forest"
+        aria-label="Whirlwind ratio"
+      />
+      <div className="mt-1 text-[10px] text-taupe">
+        Healthy zone: ≤ 80% whirlwind (≥ 20% WIG capacity).
+      </div>
     </div>
   );
 }
