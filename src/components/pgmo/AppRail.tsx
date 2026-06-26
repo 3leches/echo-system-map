@@ -8,11 +8,13 @@ import {
   Settings,
   HelpCircle,
   CircleDot,
+  LayoutDashboard,
   type LucideIcon,
 } from "lucide-react";
 
 const items: { to: string; icon: LucideIcon; label: string; match: (p: string) => boolean }[] = [
-  { to: "/research",    icon: Briefcase,    label: "Program Management", match: (p) => p === "/" || p.startsWith("/research") },
+  { to: "/",            icon: LayoutDashboard, label: "Dashboard",          match: (p) => p === "/" },
+  { to: "/research",    icon: Briefcase,    label: "Program Management", match: (p) => p.startsWith("/research") },
   { to: "/workflows",   icon: WorkflowIcon, label: "Workflows",    match: (p) => p.startsWith("/workflows") },
   { to: "/architecture",icon: Network,      label: "Architecture", match: (p) => p.startsWith("/architecture") },
   { to: "/initiatives", icon: Target,       label: "Initiatives",  match: (p) => p.startsWith("/initiatives") },
@@ -24,7 +26,7 @@ export function AppRail() {
   return (
     <div className="flex w-14 shrink-0 flex-col items-center border-r border-sand bg-paper py-4">
       <Link
-        to="/research"
+        to="/"
         aria-label="PgMO home"
         className="mb-5 flex h-9 w-9 items-center justify-center rounded-sm bg-forest text-cream"
       >
