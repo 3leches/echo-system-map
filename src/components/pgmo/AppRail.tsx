@@ -9,6 +9,8 @@ import {
   HelpCircle,
   CircleDot,
   LayoutDashboard,
+  Wand2,
+  Terminal,
   type LucideIcon,
 } from "lucide-react";
 
@@ -19,6 +21,8 @@ const items: { to: string; icon: LucideIcon; label: string; match: (p: string) =
   { to: "/architecture",icon: Network,      label: "Architecture", match: (p) => p.startsWith("/architecture") },
   { to: "/initiatives", icon: Target,       label: "Initiatives",  match: (p) => p.startsWith("/initiatives") },
   { to: "/roadmap",     icon: Calendar,     label: "Roadmap",      match: (p) => p.startsWith("/roadmap") },
+  { to: "/skills",      icon: Wand2,        label: "Skills",       match: (p) => p.startsWith("/skills") },
+  { to: "/commands",    icon: Terminal,     label: "Commands",     match: (p) => p.startsWith("/commands") },
 ];
 
 export function AppRail() {

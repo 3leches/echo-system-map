@@ -10,10 +10,12 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as WorkflowsRouteImport } from './routes/workflows'
+import { Route as SkillsRouteImport } from './routes/skills'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as RoadmapRouteImport } from './routes/roadmap'
 import { Route as ResearchRouteImport } from './routes/research'
 import { Route as InitiativesRouteImport } from './routes/initiatives'
+import { Route as CommandsRouteImport } from './routes/commands'
 import { Route as ArchitectureRouteImport } from './routes/architecture'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ResearchIndexRouteImport } from './routes/research.index'
@@ -23,6 +25,11 @@ import { Route as InitiativesIdRouteImport } from './routes/initiatives.$id'
 const WorkflowsRoute = WorkflowsRouteImport.update({
   id: '/workflows',
   path: '/workflows',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SkillsRoute = SkillsRouteImport.update({
+  id: '/skills',
+  path: '/skills',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
@@ -43,6 +50,11 @@ const ResearchRoute = ResearchRouteImport.update({
 const InitiativesRoute = InitiativesRouteImport.update({
   id: '/initiatives',
   path: '/initiatives',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CommandsRoute = CommandsRouteImport.update({
+  id: '/commands',
+  path: '/commands',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ArchitectureRoute = ArchitectureRouteImport.update({
@@ -74,10 +86,12 @@ const InitiativesIdRoute = InitiativesIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/architecture': typeof ArchitectureRoute
+  '/commands': typeof CommandsRoute
   '/initiatives': typeof InitiativesRouteWithChildren
   '/research': typeof ResearchRouteWithChildren
   '/roadmap': typeof RoadmapRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/skills': typeof SkillsRoute
   '/workflows': typeof WorkflowsRoute
   '/initiatives/$id': typeof InitiativesIdRoute
   '/research/$threadId': typeof ResearchThreadIdRoute
@@ -86,9 +100,11 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/architecture': typeof ArchitectureRoute
+  '/commands': typeof CommandsRoute
   '/initiatives': typeof InitiativesRouteWithChildren
   '/roadmap': typeof RoadmapRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/skills': typeof SkillsRoute
   '/workflows': typeof WorkflowsRoute
   '/initiatives/$id': typeof InitiativesIdRoute
   '/research/$threadId': typeof ResearchThreadIdRoute
@@ -98,10 +114,12 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/architecture': typeof ArchitectureRoute
+  '/commands': typeof CommandsRoute
   '/initiatives': typeof InitiativesRouteWithChildren
   '/research': typeof ResearchRouteWithChildren
   '/roadmap': typeof RoadmapRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/skills': typeof SkillsRoute
   '/workflows': typeof WorkflowsRoute
   '/initiatives/$id': typeof InitiativesIdRoute
   '/research/$threadId': typeof ResearchThreadIdRoute
@@ -112,10 +130,12 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/architecture'
+    | '/commands'
     | '/initiatives'
     | '/research'
     | '/roadmap'
     | '/sitemap.xml'
+    | '/skills'
     | '/workflows'
     | '/initiatives/$id'
     | '/research/$threadId'
@@ -124,9 +144,11 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/architecture'
+    | '/commands'
     | '/initiatives'
     | '/roadmap'
     | '/sitemap.xml'
+    | '/skills'
     | '/workflows'
     | '/initiatives/$id'
     | '/research/$threadId'
@@ -135,10 +157,12 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/architecture'
+    | '/commands'
     | '/initiatives'
     | '/research'
     | '/roadmap'
     | '/sitemap.xml'
+    | '/skills'
     | '/workflows'
     | '/initiatives/$id'
     | '/research/$threadId'
@@ -148,10 +172,12 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ArchitectureRoute: typeof ArchitectureRoute
+  CommandsRoute: typeof CommandsRoute
   InitiativesRoute: typeof InitiativesRouteWithChildren
   ResearchRoute: typeof ResearchRouteWithChildren
   RoadmapRoute: typeof RoadmapRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  SkillsRoute: typeof SkillsRoute
   WorkflowsRoute: typeof WorkflowsRoute
 }
 
@@ -162,6 +188,13 @@ declare module '@tanstack/react-router' {
       path: '/workflows'
       fullPath: '/workflows'
       preLoaderRoute: typeof WorkflowsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/skills': {
+      id: '/skills'
+      path: '/skills'
+      fullPath: '/skills'
+      preLoaderRoute: typeof SkillsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sitemap.xml': {
@@ -190,6 +223,13 @@ declare module '@tanstack/react-router' {
       path: '/initiatives'
       fullPath: '/initiatives'
       preLoaderRoute: typeof InitiativesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/commands': {
+      id: '/commands'
+      path: '/commands'
+      fullPath: '/commands'
+      preLoaderRoute: typeof CommandsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/architecture': {
@@ -259,10 +299,12 @@ const ResearchRouteWithChildren = ResearchRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ArchitectureRoute: ArchitectureRoute,
+  CommandsRoute: CommandsRoute,
   InitiativesRoute: InitiativesRouteWithChildren,
   ResearchRoute: ResearchRouteWithChildren,
   RoadmapRoute: RoadmapRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  SkillsRoute: SkillsRoute,
   WorkflowsRoute: WorkflowsRoute,
 }
 export const routeTree = rootRouteImport
