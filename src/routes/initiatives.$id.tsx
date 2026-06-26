@@ -1,7 +1,15 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { AppShell } from "@/components/pgmo/AppShell";
-import { usePgmo } from "@/lib/pgmo/store";
-import { LAYERS, STATUS_META, type Initiative, type LayerId } from "@/lib/pgmo/types";
+import { usePgmo, emptyLeadMeasure, emptyWigSession } from "@/lib/pgmo/store";
+import {
+  LAYERS,
+  STATUS_META,
+  type Initiative,
+  type LayerId,
+  type LeadMeasure,
+  type WigSession,
+  type WIG,
+} from "@/lib/pgmo/types";
 import { useMemo, useState } from "react";
 
 export const Route = createFileRoute("/initiatives/$id")({
@@ -18,6 +26,7 @@ function InitiativeDetail() {
   const { id } = Route.useParams();
   const initiative = usePgmo((s) => s.initiatives.find((x) => x.id === id));
   const allInitiatives = usePgmo((s) => s.initiatives);
+  const firmWigs = usePgmo((s) => s.firmWigs);
   const upsert = usePgmo((s) => s.upsertInitiative);
   const remove = usePgmo((s) => s.deleteInitiative);
   const nodes = usePgmo((s) => s.nodes);
@@ -257,6 +266,39 @@ function InitiativeDetail() {
               </button>
             </div>
           </Section>
+
+          {/* ============ 4DX ============ */}
+
+          <Section eyebrow="07 Wildly Important Goal">
+            <WigEditor
+              wig={draft.wig ?? { statement: "", from: "", to: "", deadline: draft.endDate }}
+              firmWigs={firmWigs}
+              onChange={(w) => {
+                set("wig", w);
+              }}
+              onCommit={save}
+            />
+          </Section>
+
+          <Section eyebrow="08 Lead measures">
+            <LeadMeasuresEditor
+              measures={draft.leadMeasures ?? []}
+              onChange={(m) => {
+                set("leadMeasures", m);
+              }}
+              onCommit={save}
+            />
+          </Section>
+
+          <Section eyebrow="09 Weekly WIG session log">
+            <WigSessionsEditor
+              sessions={draft.wigSessions ?? []}
+              onChange={(s) => {
+                set("wigSessions", s);
+              }}
+              onCommit={save}
+            />
+          </Section>
         </div>
 
         {/* Side */}
@@ -452,5 +494,286 @@ function SidePanel({ title, children }: { title: string; children: React.ReactNo
       <div className="eyebrow mb-2">{title}</div>
       {children}
     </div>
+  );
+}
+
+/* ====================== 4DX editors ====================== */
+
+function WigEditor({
+  wig,
+  firmWigs,
+  onChange,
+  onCommit,
+}: {
+  wig: WIG;
+  firmWigs: { id: string; statement: string }[];
+  onChange: (w: WIG) => void;
+  onCommit: () => void;
+}) {
+  const update = <K extends keyof WIG>(k: K, v: WIG[K]) => onChange({ ...wig, [k]: v });
+  return (
+    <div className="space-y-3 rounded-sm border border-border bg-paper p-4">
+      <textarea
+        rows={2}
+        placeholder='WIG statement — "From X to Y by When"'
+        value={wig.statement}
+        onChange={(e) => update("statement", e.target.value)}
+        onBlur={onCommit}
+        className="pgmo-input font-display text-lg leading-snug"
+      />
+      <div className="grid grid-cols-3 gap-3">
+        <Field label="From (today)">
+          <input value={wig.from} onChange={(e) => update("from", e.target.value)} onBlur={onCommit} className="pgmo-input" />
+        </Field>
+        <Field label="To (target)">
+          <input value={wig.to} onChange={(e) => update("to", e.target.value)} onBlur={onCommit} className="pgmo-input" />
+        </Field>
+        <Field label="By when">
+          <input type="date" value={wig.deadline} onChange={(e) => update("deadline", e.target.value)} onBlur={onCommit} className="pgmo-input" />
+        </Field>
+      </div>
+      <Field label="Rolls up to firm WIG">
+        <select
+          value={wig.firmWigId ?? ""}
+          onChange={(e) => {
+            update("firmWigId", e.target.value || undefined);
+            onCommit();
+          }}
+          className="pgmo-input"
+        >
+          <option value="">— None</option>
+          {firmWigs.map((f) => (
+            <option key={f.id} value={f.id}>{f.statement}</option>
+          ))}
+        </select>
+      </Field>
+    </div>
+  );
+}
+
+function LeadMeasuresEditor({
+  measures,
+  onChange,
+  onCommit,
+}: {
+  measures: LeadMeasure[];
+  onChange: (m: LeadMeasure[]) => void;
+  onCommit: () => void;
+}) {
+  const updateAt = (idx: number, patch: Partial<LeadMeasure>) => {
+    const next = [...measures];
+    next[idx] = { ...next[idx], ...patch };
+    onChange(next);
+  };
+  return (
+    <div className="space-y-3">
+      {measures.length === 0 && (
+        <p className="text-[12px] text-muted-foreground">
+          Define 1–2 lead measures: predictive activities the team can directly influence each week.
+        </p>
+      )}
+      {measures.map((lm, idx) => {
+        const totalT = lm.weeks.reduce((s, w) => s + w.target, 0);
+        const totalA = lm.weeks.reduce((s, w) => s + w.actual, 0);
+        const hit = totalT ? Math.round((totalA / totalT) * 100) : 0;
+        return (
+          <div key={lm.id} className="rounded-sm border border-border bg-paper p-3">
+            <div className="grid grid-cols-12 gap-2">
+              <input
+                className="pgmo-input col-span-6"
+                placeholder="Lead measure (e.g. Datasets migrated)"
+                value={lm.name}
+                onChange={(e) => updateAt(idx, { name: e.target.value })}
+                onBlur={onCommit}
+              />
+              <input
+                className="pgmo-input col-span-2"
+                placeholder="Unit"
+                value={lm.unit ?? ""}
+                onChange={(e) => updateAt(idx, { unit: e.target.value })}
+                onBlur={onCommit}
+              />
+              <input
+                className="pgmo-input col-span-3"
+                type="number"
+                placeholder="Weekly target"
+                value={lm.weeklyTarget}
+                onChange={(e) => updateAt(idx, { weeklyTarget: Number(e.target.value) })}
+                onBlur={onCommit}
+              />
+              <button
+                onClick={() => {
+                  onChange(measures.filter((x) => x.id !== lm.id));
+                  onCommit();
+                }}
+                className="col-span-1 text-muted-foreground hover:text-destructive"
+                aria-label="Remove lead measure"
+                type="button"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Weekly target vs actual mini-grid */}
+            <div className="mt-3 flex items-end gap-1">
+              {lm.weeks.map((w, wi) => {
+                const max = Math.max(w.target, w.actual, 1);
+                const tH = (w.target / max) * 36;
+                const aH = (w.actual / max) * 36;
+                const onTarget = w.actual >= w.target;
+                return (
+                  <div key={w.weekStart} className="flex flex-col items-center gap-1" title={`Wk ${wi + 1}: ${w.actual}/${w.target}`}>
+                    <div className="relative flex h-10 w-6 items-end">
+                      <div className="absolute inset-x-0 bottom-0 rounded-sm bg-sand" style={{ height: tH }} />
+                      <div
+                        className="relative w-full rounded-sm"
+                        style={{
+                          height: aH,
+                          background: onTarget ? "var(--forest)" : "#b45309",
+                        }}
+                      />
+                    </div>
+                    <input
+                      type="number"
+                      value={w.actual}
+                      onChange={(e) => {
+                        const weeks = [...lm.weeks];
+                        weeks[wi] = { ...w, actual: Number(e.target.value) };
+                        updateAt(idx, { weeks });
+                      }}
+                      onBlur={onCommit}
+                      className="w-9 rounded-sm border border-border bg-background px-1 py-0.5 text-center text-[10px]"
+                    />
+                  </div>
+                );
+              })}
+              <button
+                type="button"
+                onClick={() => {
+                  const last = lm.weeks[lm.weeks.length - 1];
+                  const nextDate = last
+                    ? new Date(new Date(last.weekStart).getTime() + 7 * 86_400_000).toISOString().slice(0, 10)
+                    : new Date().toISOString().slice(0, 10);
+                  updateAt(idx, {
+                    weeks: [...lm.weeks, { weekStart: nextDate, target: lm.weeklyTarget, actual: 0 }],
+                  });
+                  onCommit();
+                }}
+                className="ml-2 self-center rounded-sm border border-border px-2 py-1 text-[10.5px] text-muted-foreground hover:text-foreground"
+              >
+                + week
+              </button>
+              <div className="ml-auto self-center text-right text-[11px]">
+                <div className="font-display text-[18px] text-foreground">{hit}%</div>
+                <div className="text-[10px] text-muted-foreground">{totalA}/{totalT} {lm.unit}</div>
+              </div>
+            </div>
+          </div>
+        );
+      })}
+      <button
+        type="button"
+        onClick={() => {
+          onChange([...measures, emptyLeadMeasure()]);
+        }}
+        className="text-[12px] text-primary hover:underline"
+      >
+        + Add lead measure
+      </button>
+    </div>
+  );
+}
+
+function WigSessionsEditor({
+  sessions,
+  onChange,
+  onCommit,
+}: {
+  sessions: WigSession[];
+  onChange: (s: WigSession[]) => void;
+  onCommit: () => void;
+}) {
+  const updateAt = (idx: number, patch: Partial<WigSession>) => {
+    const next = [...sessions];
+    next[idx] = { ...next[idx], ...patch };
+    onChange(next);
+  };
+  return (
+    <div className="space-y-3">
+      {sessions.length === 0 && (
+        <p className="text-[12px] text-muted-foreground">
+          Log each weekly WIG session: account for last week&apos;s commitments, review the scoreboard, clear the path.
+        </p>
+      )}
+      {sessions.map((s, idx) => (
+        <div key={s.id} className="rounded-sm border border-border bg-paper p-3">
+          <div className="flex items-center justify-between gap-2">
+            <input
+              type="date"
+              value={s.weekStart}
+              onChange={(e) => updateAt(idx, { weekStart: e.target.value })}
+              onBlur={onCommit}
+              className="pgmo-input w-44"
+            />
+            <button
+              type="button"
+              onClick={() => {
+                onChange(sessions.filter((x) => x.id !== s.id));
+                onCommit();
+              }}
+              className="text-muted-foreground hover:text-destructive"
+              aria-label="Remove session"
+            >
+              ✕
+            </button>
+          </div>
+          <div className="mt-2 grid gap-2">
+            <Field label="Commitments (made last week)">
+              <textarea
+                rows={2}
+                value={s.commitments}
+                onChange={(e) => updateAt(idx, { commitments: e.target.value })}
+                onBlur={onCommit}
+                className="pgmo-input"
+              />
+            </Field>
+            <Field label="Results / accountability">
+              <textarea
+                rows={2}
+                value={s.results}
+                onChange={(e) => updateAt(idx, { results: e.target.value })}
+                onBlur={onCommit}
+                className="pgmo-input"
+              />
+            </Field>
+            <Field label="Clear the path (next week)">
+              <textarea
+                rows={2}
+                value={s.clearingPath}
+                onChange={(e) => updateAt(idx, { clearingPath: e.target.value })}
+                onBlur={onCommit}
+                className="pgmo-input"
+              />
+            </Field>
+          </div>
+        </div>
+      ))}
+      <button
+        type="button"
+        onClick={() => onChange([emptyWigSession(), ...sessions])}
+        className="text-[12px] text-primary hover:underline"
+      >
+        + New weekly session
+      </button>
+    </div>
+  );
+}
+
+function Field({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <label className="block">
+      <span className="eyebrow mb-1 block">{label}</span>
+      {children}
+    </label>
   );
 }
