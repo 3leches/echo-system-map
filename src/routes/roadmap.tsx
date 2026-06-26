@@ -1,8 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { AppShell } from "@/components/pgmo/AppShell";
 import { usePgmo } from "@/lib/pgmo/store";
-import { LAYERS, STATUS_META, type LayerId } from "@/lib/pgmo/types";
+import { LAYERS, STATUS_META, type LayerId, type Initiative } from "@/lib/pgmo/types";
 
 export const Route = createFileRoute("/roadmap")({
   head: () => ({
@@ -18,6 +18,7 @@ export const Route = createFileRoute("/roadmap")({
 
 function Roadmap() {
   const initiatives = usePgmo((s) => s.initiatives);
+  const [showLeads, setShowLeads] = useState(true);
 
   const { months, minMs, totalMs } = useMemo(() => {
     if (initiatives.length === 0) {
@@ -63,12 +64,30 @@ function Roadmap() {
           The firm's journey, in months and layers.
         </h1>
         <p className="mt-3 max-w-2xl text-[14px] text-muted-foreground">
-          Every bar is one initiative, drawn from its standard template. Dependencies flow
-          left to right; click a bar to open the initiative.
+          Every bar is one initiative, drawn from its standard template. Toggle lead measures
+          to expand 4DX sub-tracks under each bar.
         </p>
+        <div className="mt-4 flex items-center gap-2 text-[11px]">
+          <button
+            type="button"
+            onClick={() => setShowLeads((v) => !v)}
+            className={
+              "rounded-sm border px-3 py-1.5 " +
+              (showLeads
+                ? "border-primary bg-primary/5 text-primary"
+                : "border-border text-muted-foreground hover:text-foreground")
+            }
+          >
+            {showLeads ? "✓ Lead measures shown" : "Show lead measures"}
+          </button>
+          <span className="text-muted-foreground">
+            Sub-tracks render below each bar with weekly target vs. actual hit rate.
+          </span>
+        </div>
       </div>
 
-      <div className="mt-10 overflow-x-auto rounded-sm border border-border bg-paper">
+      <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_320px]">
+      <div className="overflow-x-auto rounded-sm border border-border bg-paper">
         <div className="min-w-[1100px]">
           {/* Month header */}
           <div className="grid border-b border-border" style={{ gridTemplateColumns: "200px 1fr" }}>
@@ -88,6 +107,8 @@ function Roadmap() {
 
           {LAYERS.map((layer) => {
             const items = byLayer.get(layer.id) ?? [];
+            const rowH = showLeads ? 48 : 30;
+            const minH = Math.max(80, items.length * rowH + 24);
             return (
               <div
                 key={layer.id}
@@ -101,7 +122,7 @@ function Roadmap() {
                   <div className="font-display text-[15px] text-foreground">{layer.label}</div>
                   <div className="mt-0.5 text-[10px] text-muted-foreground">{items.length} init.</div>
                 </div>
-                <div className="relative min-h-[80px] py-3">
+                <div className="relative py-3" style={{ minHeight: minH }}>
                   {/* Month grid lines */}
                   {months.map((m, i) => (
                     <div
@@ -116,23 +137,45 @@ function Roadmap() {
                     const left = pct(start);
                     const width = Math.max(((end - start) / totalMs) * 100, 2);
                     const meta = STATUS_META[i.status];
+                    const top = 12 + idx * rowH;
                     return (
-                      <Link
-                        key={i.id}
-                        to="/initiatives/$id"
-                        params={{ id: i.id }}
-                        className="absolute flex h-7 items-center overflow-hidden rounded-sm border bg-background px-2 text-[11px] hover:z-10 hover:shadow"
-                        style={{
-                          left: `${left}%`,
-                          width: `${width}%`,
-                          top: 12 + (idx % 3) * 30,
-                          borderColor: meta.tone,
-                          boxShadow: `inset 3px 0 0 ${meta.tone}`,
-                        }}
-                        title={`${i.name} — ${meta.label}`}
-                      >
-                        <span className="truncate font-medium text-foreground">{i.name}</span>
-                      </Link>
+                      <div key={i.id} className="absolute" style={{ left: `${left}%`, width: `${width}%`, top }}>
+                        <Link
+                          to="/initiatives/$id"
+                          params={{ id: i.id }}
+                          className="flex h-7 items-center overflow-hidden rounded-sm border bg-background px-2 text-[11px] hover:z-10 hover:shadow"
+                          style={{
+                            borderColor: meta.tone,
+                            boxShadow: `inset 3px 0 0 ${meta.tone}`,
+                          }}
+                          title={`${i.name} — ${meta.label}${i.wig?.statement ? "\nWIG: " + i.wig.statement : ""}`}
+                        >
+                          <span className="truncate font-medium text-foreground">{i.name}</span>
+                        </Link>
+                        {showLeads && (i.leadMeasures ?? []).slice(0, 2).map((lm) => {
+                          const totalT = lm.weeks.reduce((s, w) => s + w.target, 0);
+                          const totalA = lm.weeks.reduce((s, w) => s + w.actual, 0);
+                          const hit = totalT ? Math.min(100, (totalA / totalT) * 100) : 0;
+                          const ok = hit >= 90;
+                          const pace = hit >= 60;
+                          return (
+                            <div key={lm.id} className="mt-1 flex items-center gap-1" title={`${lm.name}: ${totalA}/${totalT} ${lm.unit ?? ""}`}>
+                              <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-sand/70">
+                                <div
+                                  className="h-full rounded-full"
+                                  style={{
+                                    width: `${hit}%`,
+                                    background: ok ? "var(--forest)" : pace ? "#b45309" : "#dc2626",
+                                  }}
+                                />
+                              </div>
+                              <span className="w-8 shrink-0 text-right font-mono text-[9px] text-muted-foreground">
+                                {Math.round(hit)}%
+                              </span>
+                            </div>
+                          );
+                        })}
+                      </div>
                     );
                   })}
                 </div>
@@ -140,6 +183,9 @@ function Roadmap() {
             );
           })}
         </div>
+      </div>
+
+      <LeadMeasuresPanel initiatives={initiatives} />
       </div>
 
       <div className="mt-6 flex flex-wrap gap-3 text-[11px]">
@@ -151,5 +197,56 @@ function Roadmap() {
         ))}
       </div>
     </AppShell>
+  );
+}
+
+function LeadMeasuresPanel({ initiatives }: { initiatives: Initiative[] }) {
+  const rows = initiatives.flatMap((i) =>
+    (i.leadMeasures ?? []).map((lm) => {
+      const totalT = lm.weeks.reduce((s, w) => s + w.target, 0);
+      const totalA = lm.weeks.reduce((s, w) => s + w.actual, 0);
+      const last = lm.weeks[lm.weeks.length - 1];
+      const hit = totalT ? Math.round((totalA / totalT) * 100) : 0;
+      return { initiative: i, lm, totalT, totalA, last, hit };
+    }),
+  );
+  return (
+    <aside className="rounded-sm border border-border bg-paper p-4">
+      <div className="eyebrow">Lead measures — weekly cadence</div>
+      <p className="mt-1 text-[11.5px] text-muted-foreground">
+        4DX scoreboard: are the predictive activities hitting their weekly targets?
+      </p>
+      <div className="mt-4 space-y-3">
+        {rows.length === 0 && (
+          <div className="text-[12px] text-muted-foreground">No lead measures defined yet.</div>
+        )}
+        {rows.map(({ initiative, lm, totalT, totalA, last, hit }) => {
+          const ok = hit >= 90;
+          const pace = hit >= 60;
+          const tone = ok ? "var(--forest)" : pace ? "#b45309" : "#dc2626";
+          return (
+            <Link
+              key={initiative.id + lm.id}
+              to="/initiatives/$id"
+              params={{ id: initiative.id }}
+              className="block rounded-sm border border-border bg-background p-2.5 hover:border-primary"
+            >
+              <div className="flex items-baseline justify-between gap-2">
+                <div className="truncate text-[12.5px] text-foreground">{lm.name}</div>
+                <div className="shrink-0 font-mono text-[11px]" style={{ color: tone }}>{hit}%</div>
+              </div>
+              <div className="mt-0.5 truncate text-[10.5px] text-muted-foreground">{initiative.name}</div>
+              <div className="mt-1.5 h-1 overflow-hidden rounded-full bg-sand/60">
+                <div className="h-full rounded-full" style={{ width: `${Math.min(100, hit)}%`, background: tone }} />
+              </div>
+              <div className="mt-1 flex items-center justify-between text-[10px] text-muted-foreground">
+                <span>{totalA}/{totalT} {lm.unit ?? ""}</span>
+                <span>{last ? `last wk ${last.actual}/${last.target}` : "no weeks yet"}</span>
+              </div>
+            </Link>
+          );
+        })}
+      </div>
+    </aside>
   );
 }

@@ -86,6 +86,7 @@ function InitiativesList() {
           <thead className="bg-secondary text-muted-foreground">
             <tr>
               <th className="px-5 py-3 font-medium">Initiative</th>
+              <th className="px-5 py-3 font-medium">WIG</th>
               <th className="px-5 py-3 font-medium">Layers</th>
               <th className="px-5 py-3 font-medium">Owner</th>
               <th className="px-5 py-3 font-medium">Status</th>
@@ -109,6 +110,20 @@ function InitiativesList() {
                     <div className="mt-0.5 max-w-xl truncate text-[12px] text-muted-foreground">
                       {i.vision || i.problem || "—"}
                     </div>
+                  </td>
+                  <td className="px-5 py-4 text-[12px] text-foreground">
+                    {i.wig?.statement ? (
+                      <div className="max-w-xs">
+                        <div className="line-clamp-2 leading-snug">{i.wig.statement}</div>
+                        {(i.wig.from || i.wig.to) && (
+                          <div className="mt-0.5 text-[10.5px] text-muted-foreground">
+                            {i.wig.from} → {i.wig.to}
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      <span className="text-muted-foreground">—</span>
+                    )}
                   </td>
                   <td className="px-5 py-4">
                     <div className="flex flex-wrap gap-1">
@@ -145,7 +160,7 @@ function InitiativesList() {
             })}
             {visible.length === 0 && (
               <tr>
-                <td colSpan={6} className="px-5 py-12 text-center text-muted-foreground">
+                <td colSpan={7} className="px-5 py-12 text-center text-muted-foreground">
                   No initiatives in this view.
                 </td>
               </tr>
