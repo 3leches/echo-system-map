@@ -84,7 +84,7 @@ interface PgmoState {
 export const usePgmo = create<PgmoState>((set, get) => ({
   nodes: initial.nodes,
   edges: initial.edges,
-  initiatives: SEED_INITIATIVES,
+  initiatives: SEED_PROGRAMS,
   firmWigs: SEED_FIRM_WIGS,
   whirlwindRatio: 72,
   lens: "workflow",
