@@ -2,9 +2,57 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { AppShell } from "@/components/pgmo/AppShell";
 import { usePgmo, emptyInitiative } from "@/lib/pgmo/store";
 import { LAYERS, STATUS_META, type InitiativeStatus } from "@/lib/pgmo/types";
+import { RAG_META, type Initiative, type Rag } from "@/lib/pgmo/types";
+import { RagPill } from "@/components/pgmo/ProgramPanels";
 import { useState } from "react";
 
-export const Route = createFileRoute("/initiatives")({
+function PortfolioSummary({ initiatives }: { initiatives: Initiative[] }) {
+  const withSummary = initiatives.filter((i) => i.summary);
+  const ragCount = (r: Rag) => withSummary.filter((i) => i.summary!.overall === r).length;
+  const projects = initiatives.flatMap((i) => i.projects ?? []);
+  const risks = initiatives.flatMap((i) => i.risks ?? []);
+  const escalated = risks.filter((r) => r.status === "escalated" || r.probability * r.impact >= 15);
+  const deps = initiatives.flatMap((i) => i.dependencyLinks ?? []);
+  const depsAtRisk = deps.filter((d) => d.status === "at_risk" || d.status === "blocked");
+  const avg = withSummary.length
+    ? Math.round(withSummary.reduce((a, i) => a + i.summary!.percentComplete, 0) / withSummary.length)
+    : 0;
+
+  const tiles = [
+    { label: "Programs reporting", value: String(withSummary.length), sub: `${initiatives.length} in portfolio` },
+    { label: "Constituent projects", value: String(projects.length), sub: `${projects.filter((p) => p.rag === "red").length} off track` },
+    { label: "Portfolio completion", value: `${avg}%`, sub: "Weighted average" },
+    { label: "Escalations", value: String(escalated.length), sub: `${depsAtRisk.length} dependencies at risk` },
+  ];
+
+  return (
+    <section className="mt-8 rounded-sm border border-border bg-paper">
+      <header className="flex flex-wrap items-center justify-between gap-3 border-b border-border px-5 py-4">
+        <div>
+          <div className="eyebrow">Executive summary</div>
+          <h2 className="mt-1 font-display text-2xl text-foreground">Portfolio status</h2>
+        </div>
+        <div className="flex gap-2">
+          {(["green", "amber", "red"] as Rag[]).map((r) => (
+            <RagPill key={r} rag={r} label={`${ragCount(r)} ${RAG_META[r].label.toLowerCase()}`} />
+          ))}
+        </div>
+      </header>
+      <div className="grid grid-cols-2 gap-px bg-border md:grid-cols-4">
+        {tiles.map((t) => (
+          <div key={t.label} className="bg-paper p-5">
+            <div className="eyebrow">{t.label}</div>
+            <div className="mt-1 font-display text-3xl text-foreground">{t.value}</div>
+            <div className="mt-1 text-[11.5px] text-muted-foreground">{t.sub}</div>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+
+export const Route = createFileRoute("/initiatives/")({
   head: () => ({
     meta: [
       { title: "Initiatives — PgMO" },
@@ -51,7 +99,10 @@ function InitiativesList() {
         </button>
       </div>
 
+      <PortfolioSummary initiatives={initiatives} />
+
       <div className="mt-6 flex flex-wrap items-center gap-2">
+
         <button
           type="button"
           onClick={() => setFilter("all")}
@@ -150,7 +201,16 @@ function InitiativesList() {
                       <span className="h-1.5 w-1.5 rounded-full" style={{ background: meta.tone }} />
                       {meta.label}
                     </span>
+                    {i.summary && (
+                      <div className="mt-1.5">
+                        <RagPill rag={i.summary.overall} />
+                        <div className="mt-1 text-[10.5px] text-muted-foreground">
+                          {i.summary.percentComplete}% complete · {(i.projects ?? []).length} projects
+                        </div>
+                      </div>
+                    )}
                   </td>
+
                   <td className="px-5 py-4 text-muted-foreground">
                     {fmtDate(i.startDate)} → {fmtDate(i.endDate)}
                   </td>
