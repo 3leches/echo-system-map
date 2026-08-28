@@ -84,9 +84,9 @@ const ResearchThreadIdRoute = ResearchThreadIdRouteImport.update({
   getParentRoute: () => ResearchRoute,
 } as any)
 const InitiativesIdRoute = InitiativesIdRouteImport.update({
-  id: '/$id',
-  path: '/$id',
-  getParentRoute: () => InitiativesRoute,
+  id: '/initiatives/$id',
+  path: '/initiatives/$id',
+  getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -191,6 +191,7 @@ export interface RootRouteChildren {
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SkillsRoute: typeof SkillsRoute
   WorkflowsRoute: typeof WorkflowsRoute
+  InitiativesIdRoute: typeof InitiativesIdRoute
   InitiativesIndexRoute: typeof InitiativesIndexRoute
 }
 
@@ -282,10 +283,10 @@ declare module '@tanstack/react-router' {
     }
     '/initiatives/$id': {
       id: '/initiatives/$id'
-      path: '/$id'
+      path: '/initiatives/$id'
       fullPath: '/initiatives/$id'
       preLoaderRoute: typeof InitiativesIdRouteImport
-      parentRoute: typeof InitiativesRoute
+      parentRoute: typeof rootRouteImport
     }
   }
 }
@@ -314,6 +315,7 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   SkillsRoute: SkillsRoute,
   WorkflowsRoute: WorkflowsRoute,
+  InitiativesIdRoute: InitiativesIdRoute,
   InitiativesIndexRoute: InitiativesIndexRoute,
 }
 export const routeTree = rootRouteImport
