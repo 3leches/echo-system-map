@@ -15,6 +15,7 @@ import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as RoadmapRouteImport } from './routes/roadmap'
 import { Route as ResearchRouteImport } from './routes/research'
 import { Route as GlossaryRouteImport } from './routes/glossary'
+import { Route as DatasetsRouteImport } from './routes/datasets'
 import { Route as CommandsRouteImport } from './routes/commands'
 import { Route as ArchitectureRouteImport } from './routes/architecture'
 import { Route as IndexRouteImport } from './routes/index'
@@ -51,6 +52,11 @@ const ResearchRoute = ResearchRouteImport.update({
 const GlossaryRoute = GlossaryRouteImport.update({
   id: '/glossary',
   path: '/glossary',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DatasetsRoute = DatasetsRouteImport.update({
+  id: '/datasets',
+  path: '/datasets',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CommandsRoute = CommandsRouteImport.update({
@@ -93,6 +99,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/architecture': typeof ArchitectureRoute
   '/commands': typeof CommandsRoute
+  '/datasets': typeof DatasetsRoute
   '/glossary': typeof GlossaryRoute
   '/research': typeof ResearchRouteWithChildren
   '/roadmap': typeof RoadmapRoute
@@ -108,6 +115,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/architecture': typeof ArchitectureRoute
   '/commands': typeof CommandsRoute
+  '/datasets': typeof DatasetsRoute
   '/glossary': typeof GlossaryRoute
   '/roadmap': typeof RoadmapRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -123,6 +131,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/architecture': typeof ArchitectureRoute
   '/commands': typeof CommandsRoute
+  '/datasets': typeof DatasetsRoute
   '/glossary': typeof GlossaryRoute
   '/research': typeof ResearchRouteWithChildren
   '/roadmap': typeof RoadmapRoute
@@ -140,6 +149,7 @@ export interface FileRouteTypes {
     | '/'
     | '/architecture'
     | '/commands'
+    | '/datasets'
     | '/glossary'
     | '/research'
     | '/roadmap'
@@ -155,6 +165,7 @@ export interface FileRouteTypes {
     | '/'
     | '/architecture'
     | '/commands'
+    | '/datasets'
     | '/glossary'
     | '/roadmap'
     | '/sitemap.xml'
@@ -169,6 +180,7 @@ export interface FileRouteTypes {
     | '/'
     | '/architecture'
     | '/commands'
+    | '/datasets'
     | '/glossary'
     | '/research'
     | '/roadmap'
@@ -185,6 +197,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ArchitectureRoute: typeof ArchitectureRoute
   CommandsRoute: typeof CommandsRoute
+  DatasetsRoute: typeof DatasetsRoute
   GlossaryRoute: typeof GlossaryRoute
   ResearchRoute: typeof ResearchRouteWithChildren
   RoadmapRoute: typeof RoadmapRoute
@@ -237,6 +250,13 @@ declare module '@tanstack/react-router' {
       path: '/glossary'
       fullPath: '/glossary'
       preLoaderRoute: typeof GlossaryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/datasets': {
+      id: '/datasets'
+      path: '/datasets'
+      fullPath: '/datasets'
+      preLoaderRoute: typeof DatasetsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/commands': {
@@ -309,6 +329,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ArchitectureRoute: ArchitectureRoute,
   CommandsRoute: CommandsRoute,
+  DatasetsRoute: DatasetsRoute,
   GlossaryRoute: GlossaryRoute,
   ResearchRoute: ResearchRouteWithChildren,
   RoadmapRoute: RoadmapRoute,
