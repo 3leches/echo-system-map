@@ -22,12 +22,21 @@ import type {
 } from "./types";
 import { LAYERS } from "./types";
 import { buildInitialFlow, SEED_INITIATIVES, SEED_FIRM_WIGS } from "./seed";
+import { PROGRAM_EXTRAS, PROGRAM_DEPENDENCIES } from "./program-seed";
 
 export const LANE_HEIGHT = 170;
 export const LANE_TOP = 24;
 
 const layerOrder = LAYERS.map((l) => l.id);
 const initial = buildInitialFlow(layerOrder, LANE_HEIGHT, LANE_TOP);
+
+/** Seed initiatives enriched with the PMO governance pack */
+const SEED_PROGRAMS: Initiative[] = SEED_INITIATIVES.map((i) => ({
+  ...i,
+  ...(PROGRAM_EXTRAS[i.id] ?? {}),
+  dependencyLinks: PROGRAM_DEPENDENCIES[i.id] ?? [],
+}));
+
 
 interface PgmoState {
   nodes: Node<PgmoNodeData>[];
