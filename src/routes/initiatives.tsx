@@ -51,7 +51,10 @@ function InitiativesList() {
         </button>
       </div>
 
+      <PortfolioSummary initiatives={initiatives} />
+
       <div className="mt-6 flex flex-wrap items-center gap-2">
+
         <button
           type="button"
           onClick={() => setFilter("all")}
