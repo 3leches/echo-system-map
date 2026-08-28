@@ -147,7 +147,137 @@ export interface Initiative {
   leadMeasures?: LeadMeasure[];
   /** 4DX — Weekly WIG session log */
   wigSessions?: WigSession[];
+
+  /* ---- PMO governance pack ---- */
+  /** Executive summary / status report for the program */
+  summary?: ProgramSummary;
+  /** Constituent projects rolling up to this program */
+  projects?: ConstituentProject[];
+  /** Workstreams cutting across the program */
+  workstreams?: Workstream[];
+  /** Risk & issue register */
+  risks?: RiskItem[];
+  /** Named cross-program dependencies */
+  dependencyLinks?: DependencyLink[];
+  /** Key decisions taken / pending */
+  decisions?: DecisionLog[];
 }
+
+/* ============================================================
+ * PMO governance primitives
+ * ============================================================ */
+
+export type Rag = "green" | "amber" | "red";
+
+export const RAG_META: Record<Rag, { label: string; tone: string; bg: string }> = {
+  green: { label: "On track", tone: "oklch(0.45 0.09 155)", bg: "oklch(0.95 0.03 155)" },
+  amber: { label: "Watch",    tone: "oklch(0.58 0.13 75)",  bg: "oklch(0.96 0.04 85)" },
+  red:   { label: "Off track",tone: "oklch(0.52 0.18 30)",  bg: "oklch(0.95 0.04 30)" },
+};
+
+export interface ProgramSummary {
+  /** Reporting period label, e.g. "Week of 24 Aug 2026" */
+  period: string;
+  overall: Rag;
+  schedule: Rag;
+  budget: Rag;
+  scope: Rag;
+  benefits: Rag;
+  /** 2-4 sentence narrative for the steering committee */
+  narrative: string;
+  highlights: string[];
+  lowlights: string[];
+  asks: string[];
+  /** % complete, 0-100 */
+  percentComplete: number;
+  budgetSpent?: string;
+  budgetTotal?: string;
+  nextGate?: { name: string; date: string };
+}
+
+export type ProjectStage = "discovery" | "design" | "build" | "test" | "deploy" | "closed";
+
+export interface ConstituentProject {
+  id: string;
+  name: string;
+  lead: string;
+  workstreamId?: string;
+  stage: ProjectStage;
+  rag: Rag;
+  percentComplete: number;
+  startDate: string;
+  endDate: string;
+  budget?: string;
+  spend?: string;
+  note?: string;
+}
+
+export interface Workstream {
+  id: string;
+  name: string;
+  lead: string;
+  layer?: LayerId;
+  objective: string;
+  rag: Rag;
+  headcount?: number;
+}
+
+export type RiskType = "risk" | "issue";
+
+export interface RiskItem {
+  id: string;
+  type: RiskType;
+  title: string;
+  description?: string;
+  category: string;
+  owner: string;
+  /** 1-5 */
+  probability: number;
+  /** 1-5 */
+  impact: number;
+  status: "open" | "mitigating" | "closed" | "escalated";
+  mitigation: string;
+  dueDate?: string;
+  projectId?: string;
+}
+
+export type DependencyKind = "data" | "platform" | "vendor" | "resource" | "regulatory" | "decision";
+
+export interface DependencyLink {
+  id: string;
+  /** initiative id this program depends on */
+  onInitiativeId: string;
+  kind: DependencyKind;
+  description: string;
+  neededBy: string;
+  status: "on_track" | "at_risk" | "blocked" | "met";
+}
+
+export interface DecisionLog {
+  id: string;
+  title: string;
+  date: string;
+  decidedBy: string;
+  status: "pending" | "approved" | "rejected";
+  detail?: string;
+}
+
+export const STAGE_META: Record<ProjectStage, { label: string }> = {
+  discovery: { label: "Discovery" },
+  design: { label: "Design" },
+  build: { label: "Build" },
+  test: { label: "Test" },
+  deploy: { label: "Deploy" },
+  closed: { label: "Closed" },
+};
+
+export const DEP_STATUS_META: Record<DependencyLink["status"], { label: string; rag: Rag }> = {
+  met: { label: "Met", rag: "green" },
+  on_track: { label: "On track", rag: "green" },
+  at_risk: { label: "At risk", rag: "amber" },
+  blocked: { label: "Blocked", rag: "red" },
+};
+
 
 export const LAYERS: { id: LayerId; label: string; hue: string; description: string }[] = [
   { id: "front_office", label: "Front Office", hue: "oklch(0.78 0.07 90)", description: "Origination, trading, client-facing" },
