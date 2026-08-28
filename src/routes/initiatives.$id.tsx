@@ -94,9 +94,27 @@ function InitiativeDetail() {
         </div>
       </div>
 
+      {/* ---------- PMO governance pack ---------- */}
+      <div className="mt-10 space-y-6">
+        {draft.summary && <ExecutiveSummary summary={draft.summary} />}
+        {(draft.workstreams?.length ?? 0) > 0 && (
+          <WorkstreamBoard workstreams={draft.workstreams ?? []} projects={draft.projects ?? []} />
+        )}
+        {(draft.projects?.length ?? 0) > 0 && (
+          <ProjectStatusTable projects={draft.projects ?? []} workstreams={draft.workstreams ?? []} />
+        )}
+        <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
+          <MilestoneTimeline initiative={draft} />
+          <DependencyMatrix links={draft.dependencyLinks ?? []} initiatives={allInitiatives} />
+        </div>
+        {(draft.risks?.length ?? 0) > 0 && <RiskRegister risks={draft.risks ?? []} />}
+        {(draft.decisions?.length ?? 0) > 0 && <DecisionLogPanel initiative={draft} />}
+      </div>
+
       <div className="mt-10 grid grid-cols-12 gap-10">
         {/* Main */}
         <div className="col-span-12 space-y-10 lg:col-span-8">
+
           <Section eyebrow="01 Vision">
             <textarea
               rows={2}
