@@ -10,6 +10,7 @@ import {
   CheckCircle2,
   Layers,
   RefreshCw,
+  Table2,
 } from "lucide-react";
 import { AppShell } from "@/components/pgmo/AppShell";
 import {
@@ -21,6 +22,7 @@ import {
   type DatasetDomain,
   type SourceKind,
 } from "@/lib/pgmo/datasets-mock";
+import { sampleRows } from "@/lib/pgmo/dataset-samples";
 
 export const Route = createFileRoute("/datasets")({
   head: () => ({
@@ -208,6 +210,91 @@ function DatasetsPage() {
   );
 }
 
+function SampleValues({ d }: { d: Dataset }) {
+  const rows = useMemo(() => sampleRows(d, 3), [d]);
+  const [row, setRow] = useState(0);
+  const [mode, setMode] = useState<"record" | "table">("record");
+  const current = rows[Math.min(row, rows.length - 1)];
+
+  return (
+    <Section title="Sample values" icon={<Table2 className="h-2.5 w-2.5" />}>
+      <div className="mb-1.5 flex items-center justify-between gap-2">
+        <div className="flex gap-1">
+          {rows.map((_, i) => (
+            <button
+              key={i}
+              type="button"
+              onClick={() => {
+                setMode("record");
+                setRow(i);
+              }}
+              className={`tabular rounded-sm border px-1.5 py-0.5 text-[10.5px] ${
+                mode === "record" && i === row
+                  ? "border-forest bg-forest/10 text-forest"
+                  : "border-sand bg-paper text-taupe hover:text-ink"
+              }`}
+            >
+              Row {i + 1}
+            </button>
+          ))}
+        </div>
+        <button
+          type="button"
+          onClick={() => setMode(mode === "table" ? "record" : "table")}
+          className={`rounded-sm border px-1.5 py-0.5 text-[10.5px] ${
+            mode === "table" ? "border-forest bg-forest/10 text-forest" : "border-sand bg-paper text-taupe hover:text-ink"
+          }`}
+        >
+          Table view
+        </button>
+      </div>
+
+      {mode === "record" ? (
+        <div className="overflow-hidden rounded-sm border border-sand bg-paper">
+          <table className="w-full text-[11.5px]">
+            <tbody>
+              {d.fields.map((f) => (
+                <tr key={f.name} className="border-b border-sand align-top last:border-b-0">
+                  <td className="w-[40%] px-2.5 py-1.5 font-mono text-[10.5px] text-taupe">{f.name}</td>
+                  <td className="px-2.5 py-1.5 font-mono text-[10.5px] text-ink">{current[f.name]}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        <div className="overflow-x-auto rounded-sm border border-sand bg-paper">
+          <table className="min-w-full text-[10.5px]">
+            <thead className="border-b border-sand bg-cream/60 text-taupe">
+              <tr>
+                {d.fields.map((f) => (
+                  <th key={f.name} className="whitespace-nowrap px-2 py-1 text-left font-mono font-normal">
+                    {f.name}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((r, i) => (
+                <tr key={i} className="border-b border-sand last:border-b-0">
+                  {d.fields.map((f) => (
+                    <td key={f.name} className="max-w-[240px] truncate whitespace-nowrap px-2 py-1 font-mono text-ink">
+                      {r[f.name]}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+      <div className="mt-1 text-[10px] italic text-taupe">
+        Illustrative records — representative of the {d.seededRows} rows this dataset carries in the prototype.
+      </div>
+    </Section>
+  );
+}
+
 function Detail({ d, onPick }: { d: Dataset; onPick: (id: string) => void }) {
   const inbound = inboundRelations(d.id);
 
@@ -243,7 +330,10 @@ function Detail({ d, onPick }: { d: Dataset; onPick: (id: string) => void }) {
         <Meta label="Fields" value={String(d.fields.length)} />
       </div>
 
+      <SampleValues d={d} />
+
       <Section title="Schema" icon={<KeyRound className="h-2.5 w-2.5" />}>
+
         <div className="overflow-hidden rounded-sm border border-sand bg-paper">
           <table className="w-full text-[11.5px]">
             <tbody>
