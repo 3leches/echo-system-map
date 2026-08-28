@@ -201,7 +201,16 @@ function InitiativesList() {
                       <span className="h-1.5 w-1.5 rounded-full" style={{ background: meta.tone }} />
                       {meta.label}
                     </span>
+                    {i.summary && (
+                      <div className="mt-1.5">
+                        <RagPill rag={i.summary.overall} />
+                        <div className="mt-1 text-[10.5px] text-muted-foreground">
+                          {i.summary.percentComplete}% complete · {(i.projects ?? []).length} projects
+                        </div>
+                      </div>
+                    )}
                   </td>
+
                   <td className="px-5 py-4 text-muted-foreground">
                     {fmtDate(i.startDate)} → {fmtDate(i.endDate)}
                   </td>
