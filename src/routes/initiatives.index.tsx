@@ -52,7 +52,7 @@ function PortfolioSummary({ initiatives }: { initiatives: Initiative[] }) {
 }
 
 
-export const Route = createFileRoute("/initiatives")({
+export const Route = createFileRoute("/initiatives/")({
   head: () => ({
     meta: [
       { title: "Initiatives — PgMO" },
