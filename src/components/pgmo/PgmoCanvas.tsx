@@ -18,6 +18,7 @@ import { usePgmo } from "@/lib/pgmo/store";
 import { type PgmoEdgeData, type Lens } from "@/lib/pgmo/types";
 
 const nodeTypes: NodeTypes = { pgmo: PgmoNode };
+const edgeTypes: EdgeTypes = {};
 
 const ALL_LENS_TABS: { id: Lens; label: string; sub: string }[] = [
   { id: "workflow", label: "Workflow", sub: "Process & steps" },
@@ -114,7 +115,7 @@ function Inner({ lenses }: PgmoCanvasProps) {
     [setSelected],
   );
 
-  const edgeTypes: EdgeTypes = useMemo(() => ({}), []);
+  
 
   return (
     <div className="flex h-full w-full">
