@@ -243,7 +243,10 @@ function Detail({ d, onPick }: { d: Dataset; onPick: (id: string) => void }) {
         <Meta label="Fields" value={String(d.fields.length)} />
       </div>
 
+      <SampleValues d={d} />
+
       <Section title="Schema" icon={<KeyRound className="h-2.5 w-2.5" />}>
+
         <div className="overflow-hidden rounded-sm border border-sand bg-paper">
           <table className="w-full text-[11.5px]">
             <tbody>
