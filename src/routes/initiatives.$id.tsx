@@ -10,7 +10,17 @@ import {
   type WigSession,
   type WIG,
 } from "@/lib/pgmo/types";
+import {
+  ExecutiveSummary,
+  WorkstreamBoard,
+  ProjectStatusTable,
+  RiskRegister,
+  DependencyMatrix,
+  MilestoneTimeline,
+  DecisionLogPanel,
+} from "@/components/pgmo/ProgramPanels";
 import { useMemo, useState } from "react";
+
 
 export const Route = createFileRoute("/initiatives/$id")({
   head: () => ({
