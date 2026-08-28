@@ -114,7 +114,7 @@ function Inner({ lenses }: PgmoCanvasProps) {
     [setSelected],
   );
 
-  const edgeTypes: EdgeTypes = useMemo(() => ({}), []);
+  
 
   return (
     <div className="flex h-full w-full">
