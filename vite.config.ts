@@ -12,6 +12,9 @@ export default defineConfig({
       resolve: {
         noExternal: true,
       },
+      optimizeDeps: {
+        noDiscovery: false,
+      },
     },
   },
   plugins: [
