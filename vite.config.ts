@@ -5,12 +5,15 @@ import tailwindcss from "@tailwindcss/vite";
 import viteTsConfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig({
+  resolve: {
+    noExternal: true,
+    tsconfigPaths: true,
+  },
   plugins: [
     tanstackStart({
       server: { entry: "server" },
     }),
     react(),
     tailwindcss(),
-    viteTsConfigPaths(),
   ],
 });
